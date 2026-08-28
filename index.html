@@ -229,7 +229,16 @@ async function saveProduct(){
    if(e)return alert("Upload ảnh lỗi: "+e.message);
    image_url=db.storage.from("products").getPublicUrl(path).data.publicUrl;
  }
- const row={product_code:code,name,price,stock,sizes,description:desc,active:true};
+ const row={
+  product_code:code,
+  name:name,
+  product_name:name,
+  price:price,
+  stock:stock,
+  sizes:sizes,
+  description:desc,
+  active:true
+};
  if(image_url)row.image_url=image_url;
  let res;
  if(editingId)res=await db.from("products").update(row).eq("id",editingId);else res=await db.from("products").insert(row);
