@@ -161,28 +161,45 @@ let products=[],selected=null,editingId=null;
 
 async function loadProducts(){
  const {data,error}=await db.from("products").select("*").eq("active",true).order("created_at",{ascending:false});
- if(error){productList.innerHTML='<div class="empty">Chưa có bảng products hoặc chưa có sản phẩm.</div>';console.error(error);return}
+ const list=document.getElementById("productList");
+ if(error){list.innerHTML='<div class="empty">Không tải được sản phẩm.</div>';console.error(error);return}
  products=data||[];
- productList.innerHTML=products.length?products.map(p=>`
- <div class="product">
+ list.innerHTML=products.length?products.map(p=>{
+  const sizes=Array.isArray(p.sizes)?p.sizes:String(p.sizes||"").split(",").map(x=>x.trim()).filter(Boolean);
+  return `<div class="product">
    <img src="${esc(p.image_url||"https://placehold.co/600x400?text=Product")}" alt="">
-   <div class="pbody"><div class="code">${esc(p.product_code)}</div><h3>${esc(p.name)}</h3>
+   <div class="pbody"><div class="code">${esc(p.product_code||"")}</div><h3>${esc(p.name||p.product_name||"")}</h3>
    <div class="price">${money(p.price)}</div><div class="muted">Tồn kho: ${Number(p.stock||0)}</div>
-   <div class="sizes">${(Array.isArray(p.sizes)?p.sizes:String(p.sizes||"").split(",").map(x=>x.trim()).filter(Boolean)).map(s=>`<button class="sizebtn" onclick="chooseProduct('${p.id}','${esc(s)}')">${esc(s)}</button>`).join("")}</div>
+   <div class="sizes">${sizes.map(s=>`<button type="button" class="sizebtn" data-product-id="${esc(p.id)}" data-size="${esc(s)}">${esc(s)}</button>`).join("")}</div>
    ${p.description?`<div class="muted">${esc(p.description)}</div>`:""}
-   <button class="primary wide" onclick="chooseProduct('${p.id}','${Array.isArray(p.sizes)?esc(p.sizes[0]||""):esc(String(p.sizes||"").split(",")[0]||"")}')">Chọn sản phẩm</button>
-   </div>
- </div>`).join(""):'<div class="empty full">Chưa có sản phẩm.</div>';
+   <button type="button" class="primary wide choose-product-btn" data-product-id="${esc(p.id)}">Chọn sản phẩm</button>
+   </div></div>`;
+ }).join(""):'<div class="empty full">Chưa có sản phẩm.</div>';
+ list.querySelectorAll(".sizebtn").forEach(btn=>btn.addEventListener("click",()=>chooseProduct(btn.dataset.productId,btn.dataset.size)));
+ list.querySelectorAll(".choose-product-btn").forEach(btn=>btn.addEventListener("click",()=>chooseProduct(btn.dataset.productId,"")));
 }
 function chooseProduct(id,size){
- selected=products.find(p=>p.id===id);if(!selected)return;
+ selected=products.find(p=>String(p.id)===String(id));
+ if(!selected){console.error("Không tìm thấy sản phẩm:",id);return alert("Không tìm thấy sản phẩm. Vui lòng tải lại trang.");}
  const sizes=Array.isArray(selected.sizes)?selected.sizes:String(selected.sizes||"").split(",").map(x=>x.trim()).filter(Boolean);
- selectedSize.value=size||sizes[0]||"Không có size";selectedProduct.value=selected.name;selectedCode.value=selected.product_code;selectedPrice.textContent=money(selected.price);selectedQty.value=1;orderFormCard.classList.remove("hidden");calcSelected();orderFormCard.scrollIntoView({behavior:"smooth"})
+ document.getElementById("selectedSize").value=size||sizes[0]||"Không có size";
+ document.getElementById("selectedProduct").value=selected.name||selected.product_name||"";
+ document.getElementById("selectedCode").value=selected.product_code||"";
+ document.getElementById("selectedPrice").textContent=money(selected.price);
+ document.getElementById("selectedQty").value=1;
+ const form=document.getElementById("orderFormCard");
+ form.classList.remove("hidden");
+ calcSelected();
+ form.scrollIntoView({behavior:"smooth",block:"start"});
 }
 function calcSelected(){
- if(!selected)return;const q=Math.max(1,Number(selectedQty.value)||1),total=q*Number(selected.price||0);
- selectedTotal.textContent=money(total);selectedPaid.textContent="0đ";selectedRemain.textContent=money(total);
+ if(!selected)return;
+ const q=Math.max(1,Number(document.getElementById("selectedQty").value)||1),total=q*Number(selected.price||0);
+ document.getElementById("selectedTotal").textContent=money(total);
+ document.getElementById("selectedPaid").textContent="0đ";
+ document.getElementById("selectedRemain").textContent=money(total);
 }
+
 async function createOrder(){
  if(!selected)return alert("Chọn sản phẩm trước.");
  const {data:{user}}=await db.auth.getUser();if(!user)return;
@@ -229,16 +246,7 @@ async function saveProduct(){
    if(e)return alert("Upload ảnh lỗi: "+e.message);
    image_url=db.storage.from("products").getPublicUrl(path).data.publicUrl;
  }
- const row={
-  product_code:code,
-  name:name,
-  product_name:name,
-  price:price,
-  stock:stock,
-  sizes:sizes,
-  description:desc,
-  active:true
-};
+ const row={product_code:code,name,price,stock,sizes,description:desc,active:true};
  if(image_url)row.image_url=image_url;
  let res;
  if(editingId)res=await db.from("products").update(row).eq("id",editingId);else res=await db.from("products").insert(row);
