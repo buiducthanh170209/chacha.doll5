@@ -3,1243 +3,1465 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>chacha.doll5  - Đặt hàng</title>
+
+<title>chacha.doll5 - Đặt hàng</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,Helvetica,sans-serif;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
 }
 
 body{
-  min-height:100vh;
-  background:linear-gradient(135deg,#eef2ff,#f8fafc,#e0f2fe);
-  color:#172033;
-}
-
-button,input,select,textarea{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
+    background:linear-gradient(135deg,#fdf2f8,#eef2ff,#f8fafc);
+    min-height:100vh;
+    color:#1f2937;
 }
 
 .hidden{
-  display:none!important;
+    display:none!important;
 }
 
-/* LOGIN */
+button{
+    cursor:pointer;
+}
 
-.auth-page{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
+.auth{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
 }
 
 .auth-box{
-  width:100%;
-  max-width:430px;
-  background:rgba(255,255,255,.95);
-  border-radius:24px;
-  padding:35px;
-  box-shadow:0 20px 60px rgba(0,0,0,.12);
+    width:100%;
+    max-width:430px;
+    background:white;
+    padding:35px;
+    border-radius:25px;
+    box-shadow:0 20px 60px rgba(0,0,0,.12);
 }
 
 .logo{
-  text-align:center;
-  margin-bottom:25px;
+    text-align:center;
+    margin-bottom:25px;
 }
 
 .logo-icon{
-  width:65px;
-  height:65px;
-  margin:auto;
-  border-radius:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#4f46e5,#7c3aed);
-  color:white;
-  font-size:30px;
-  box-shadow:0 10px 25px rgba(79,70,229,.3);
+    width:70px;
+    height:70px;
+    margin:auto;
+    border-radius:22px;
+    background:linear-gradient(135deg,#ec4899,#8b5cf6);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
 }
 
 .logo h1{
-  margin-top:12px;
-  font-size:25px;
+    margin-top:12px;
 }
 
 .logo p{
-  color:#64748b;
-  margin-top:6px;
+    color:#64748b;
+    margin-top:5px;
 }
 
-.auth-tabs{
-  display:flex;
-  background:#f1f5f9;
-  padding:5px;
-  border-radius:12px;
-  margin-bottom:20px;
+.tabs{
+    display:flex;
+    gap:5px;
+    background:#f1f5f9;
+    padding:5px;
+    border-radius:12px;
+    margin-bottom:20px;
 }
 
-.auth-tabs button{
-  width:50%;
-  border:0;
-  padding:11px;
-  border-radius:9px;
-  background:transparent;
+.tabs button{
+    flex:1;
+    padding:11px;
+    border:0;
+    border-radius:9px;
+    background:transparent;
 }
 
-.auth-tabs button.active{
-  background:white;
-  color:#4f46e5;
-  font-weight:bold;
-  box-shadow:0 2px 8px rgba(0,0,0,.06);
+.tabs .active{
+    background:white;
+    color:#db2777;
+    font-weight:bold;
 }
 
 .field{
-  margin-bottom:15px;
+    margin-bottom:15px;
 }
 
 .field label{
-  display:block;
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:7px;
+    display:block;
+    margin-bottom:7px;
+    font-size:14px;
+    font-weight:bold;
 }
 
-.field input,
-.field select,
-.field textarea{
-  width:100%;
-  padding:13px 14px;
-  border:1px solid #dbe2ea;
-  border-radius:12px;
-  outline:none;
-  background:white;
+input,
+select,
+textarea{
+    width:100%;
+    padding:13px;
+    border:1px solid #dbe2ea;
+    border-radius:11px;
+    outline:none;
 }
 
-.field input:focus,
-.field select:focus,
-.field textarea:focus{
-  border-color:#6366f1;
-  box-shadow:0 0 0 3px rgba(99,102,241,.1);
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#ec4899;
 }
 
 .primary{
-  width:100%;
-  border:0;
-  padding:14px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#4f46e5,#7c3aed);
-  color:white;
-  font-weight:bold;
-  transition:.2s;
+    width:100%;
+    padding:14px;
+    border:0;
+    border-radius:12px;
+    color:white;
+    font-weight:bold;
+    background:linear-gradient(135deg,#ec4899,#8b5cf6);
 }
 
-.primary:hover{
-  transform:translateY(-1px);
-  box-shadow:0 8px 20px rgba(79,70,229,.25);
+.msg{
+    margin-top:15px;
+    padding:12px;
+    border-radius:10px;
+    display:none;
+    font-size:14px;
 }
 
-.message{
-  margin-top:15px;
-  padding:11px;
-  border-radius:10px;
-  font-size:14px;
-  display:none;
-}
-
-/* APP */
-
-.app{
-  min-height:100vh;
-}
-
-.topbar{
-  background:white;
-  border-bottom:1px solid #e5e7eb;
-  padding:15px 25px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:10;
+header{
+    background:white;
+    padding:15px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #e5e7eb;
+    position:sticky;
+    top:0;
+    z-index:5;
 }
 
 .brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:bold;
-  font-size:19px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+    font-weight:bold;
 }
 
 .brand span{
-  width:38px;
-  height:38px;
-  border-radius:11px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#4f46e5;
-  color:white;
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#ec4899,#8b5cf6);
+    color:white;
 }
 
-.user-area{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.user-name{
-  font-size:14px;
-  font-weight:bold;
+.user{
+    display:flex;
+    align-items:center;
+    gap:12px;
 }
 
 .logout{
-  border:1px solid #e2e8f0;
-  background:white;
-  padding:9px 13px;
-  border-radius:9px;
+    border:1px solid #ddd;
+    background:white;
+    padding:9px 14px;
+    border-radius:9px;
 }
 
 .container{
-  max-width:1200px;
-  margin:auto;
-  padding:30px 20px;
+    max-width:1100px;
+    margin:auto;
+    padding:30px 20px;
 }
 
 .welcome{
-  margin-bottom:25px;
+    margin-bottom:25px;
 }
 
 .welcome h2{
-  font-size:28px;
-  margin-bottom:7px;
+    font-size:28px;
+    margin-bottom:6px;
 }
 
 .welcome p{
-  color:#64748b;
+    color:#64748b;
 }
 
 .cards{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-  margin-bottom:25px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-bottom:25px;
 }
 
 .card{
-  background:white;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 8px 30px rgba(15,23,42,.06);
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 8px 30px rgba(0,0,0,.06);
 }
 
 .stat-title{
-  color:#64748b;
-  font-size:14px;
+    color:#64748b;
+    font-size:14px;
 }
 
-.stat-value{
-  font-size:28px;
-  font-weight:bold;
-  margin-top:8px;
+.stat{
+    font-size:27px;
+    font-weight:bold;
+    margin-top:8px;
 }
 
-.section-title{
-  margin-bottom:15px;
-  font-size:20px;
-}
-
-.order-form{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px;
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
 }
 
 .full{
-  grid-column:1/-1;
+    grid-column:1/-1;
 }
 
-.money-box{
-  background:#eef2ff;
-  border:1px solid #c7d2fe;
-  border-radius:14px;
-  padding:16px;
+.money{
+    background:#fdf2f8;
+    border:1px solid #fbcfe8;
+    padding:15px;
+    border-radius:12px;
 }
 
 .money-row{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
 }
 
 .remaining{
-  font-size:20px;
-  font-weight:bold;
-  color:#4338ca;
-}
-
-.orders{
-  margin-top:30px;
+    font-size:20px;
+    color:#db2777;
+    font-weight:bold;
 }
 
 .order{
-  background:white;
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:15px;
-  box-shadow:0 8px 30px rgba(15,23,42,.06);
+    background:white;
+    padding:20px;
+    border-radius:18px;
+    margin-bottom:15px;
+    box-shadow:0 8px 30px rgba(0,0,0,.06);
 }
 
-.order-head{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:15px;
-}
-
-.order-id{
-  font-weight:bold;
+.order-top{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
 }
 
 .status{
-  padding:6px 10px;
-  border-radius:20px;
-  background:#fef3c7;
-  color:#92400e;
-  font-size:12px;
-  font-weight:bold;
+    background:#fef3c7;
+    color:#92400e;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
 }
 
 .order-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
 }
 
 .info{
-  background:#f8fafc;
-  padding:11px;
-  border-radius:10px;
+    background:#f8fafc;
+    padding:11px;
+    border-radius:10px;
 }
 
 .info small{
-  color:#64748b;
-  display:block;
-  margin-bottom:4px;
+    color:#64748b;
+    display:block;
+    margin-bottom:4px;
 }
 
 .admin-table{
-  width:100%;
-  border-collapse:collapse;
-  background:white;
-  border-radius:15px;
-  overflow:hidden;
+    width:100%;
+    border-collapse:collapse;
 }
 
 .admin-table th,
 .admin-table td{
-  padding:13px;
-  border-bottom:1px solid #edf0f4;
-  text-align:left;
-  font-size:14px;
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+    white-space:nowrap;
+    font-size:14px;
 }
 
 .admin-table th{
-  background:#f8fafc;
+    background:#f8fafc;
 }
 
-.danger{
-  color:#dc2626;
-}
-
-/* MOBILE */
-
-@media(max-width:750px){
-
-  .topbar{
-    padding:12px 15px;
-  }
-
-  .user-name{
-    display:none;
-  }
-
-  .container{
-    padding:22px 14px;
-  }
-
-  .welcome h2{
-    font-size:23px;
-  }
-
-  .cards{
-    grid-template-columns:1fr;
-  }
-
-  .order-form{
-    grid-template-columns:1fr;
-  }
-
-  .full{
-    grid-column:auto;
-  }
-
-  .order-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .auth-box{
-    padding:25px 20px;
-  }
-
-  .admin-table{
-    display:block;
+.table-wrap{
     overflow-x:auto;
-    white-space:nowrap;
-  }
+}
+
+@media(max-width:700px){
+
+    header{
+        padding:12px 15px;
+    }
+
+    .user-name{
+        display:none;
+    }
+
+    .container{
+        padding:20px 14px;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .full{
+        grid-column:auto;
+    }
+
+    .order-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
 }
 </style>
 </head>
 
 <body>
 
-<!-- AUTH -->
+<!-- LOGIN -->
 
-<div id="authPage" class="auth-page">
+<div id="authPage" class="auth">
 
-  <div class="auth-box">
+<div class="auth-box">
 
-    <div class="logo">
-      <div class="logo-icon">📦</div>
-      <h1>OrderHub</h1>
-      <p>Hệ thống đặt hàng</p>
-    </div>
+<div class="logo">
+<div class="logo-icon">🎀</div>
+<h1>chacha.doll5</h1>
+<p>Hệ thống đặt hàng</p>
+</div>
 
-    <div class="auth-tabs">
-      <button id="loginTab" class="active" onclick="showLogin()">
-        Đăng nhập
-      </button>
+<div class="tabs">
+<button id="loginTab" class="active" onclick="showLogin()">
+Đăng nhập
+</button>
 
-      <button id="registerTab" onclick="showRegister()">
-        Đăng ký
-      </button>
-    </div>
+<button id="registerTab" onclick="showRegister()">
+Tạo tài khoản
+</button>
+</div>
 
-    <!-- LOGIN -->
+<div id="loginForm">
 
-    <div id="loginForm">
+<div class="field">
+<label>Email</label>
+<input id="loginEmail" type="email" placeholder="Email của bạn">
+</div>
 
-      <div class="field">
-        <label>Tên đăng nhập</label>
-        <input id="loginUsername" placeholder="Nhập tên đăng nhập">
-      </div>
+<div class="field">
+<label>Mật khẩu</label>
+<input id="loginPassword" type="password" placeholder="Mật khẩu">
+</div>
 
-      <div class="field">
-        <label>Mật khẩu</label>
-        <input id="loginPassword" type="password" placeholder="Nhập mật khẩu">
-      </div>
+<button class="primary" onclick="login()">
+ĐĂNG NHẬP
+</button>
 
-      <button class="primary" onclick="login()">
-        Đăng nhập
-      </button>
+</div>
 
-    </div>
 
-    <!-- REGISTER -->
+<div id="registerForm" class="hidden">
 
-    <div id="registerForm" class="hidden">
+<div class="field">
+<label>Họ tên</label>
+<input id="regName" placeholder="Nguyễn Văn A">
+</div>
 
-      <div class="field">
-        <label>Họ tên</label>
-        <input id="regName" placeholder="Nguyễn Văn A">
-      </div>
+<div class="field">
+<label>Số điện thoại</label>
+<input id="regPhone" placeholder="09xxxxxxxx">
+</div>
 
-      <div class="field">
-        <label>Số điện thoại</label>
-        <input id="regPhone" placeholder="09xxxxxxxx">
-      </div>
+<div class="field">
+<label>Email</label>
+<input id="regEmail" type="email" placeholder="Email">
+</div>
 
-      <div class="field">
-        <label>Tên đăng nhập</label>
-        <input id="regUsername" placeholder="Tạo tên đăng nhập">
-      </div>
+<div class="field">
+<label>Mật khẩu</label>
+<input id="regPassword" type="password" placeholder="Ít nhất 6 ký tự">
+</div>
 
-      <div class="field">
-        <label>Mật khẩu</label>
-        <input id="regPassword" type="password" placeholder="Tạo mật khẩu">
-      </div>
+<button class="primary" onclick="register()">
+TẠO TÀI KHOẢN
+</button>
 
-      <button class="primary" onclick="register()">
-        Tạo tài khoản
-      </button>
+</div>
 
-    </div>
+<div id="authMsg" class="msg"></div>
 
-    <div id="authMessage" class="message"></div>
-
-  </div>
+</div>
 
 </div>
 
 
 <!-- APP -->
 
-<div id="app" class="app hidden">
+<div id="app" class="hidden">
 
-  <div class="topbar">
+<header>
 
-    <div class="brand">
-      <span>📦</span>
-      chacha.doll5
-    </div>
+<div class="brand">
+<span>🎀</span>
+chacha.doll5
+</div>
 
-    <div class="user-area">
-      <div id="userName" class="user-name"></div>
-      <button class="logout" onclick="logout()">Đăng xuất</button>
-    </div>
+<div class="user">
+<div id="userName" class="user-name"></div>
+<button class="logout" onclick="logout()">Đăng xuất</button>
+</div>
 
-  </div>
+</header>
 
 
-  <!-- CUSTOMER -->
+<!-- CUSTOMER -->
 
-  <div id="customerPage">
+<div id="customerPage">
 
-    <div class="container">
+<div class="container">
 
-      <div class="welcome">
-        <h2>Xin chào 👋</h2>
-        <p>Hãy nhập thông tin đơn hàng của bạn.</p>
-      </div>
+<div class="welcome">
+<h2>Xin chào 👋</h2>
+<p>Quản lý đơn hàng của bạn tại chacha.doll5</p>
+</div>
 
-      <div class="cards">
 
-        <div class="card">
-          <div class="stat-title">Tổng đơn hàng</div>
-          <div id="myOrderCount" class="stat-value">0</div>
-        </div>
+<div class="cards">
 
-        <div class="card">
-          <div class="stat-title">Đã đặt cọc</div>
-          <div id="myDeposit" class="stat-value">0đ</div>
-        </div>
+<div class="card">
+<div class="stat-title">Đơn hàng</div>
+<div id="orderCount" class="stat">0</div>
+</div>
 
-        <div class="card">
-          <div class="stat-title">Còn phải trả</div>
-          <div id="myRemaining" class="stat-value">0đ</div>
-        </div>
+<div class="card">
+<div class="stat-title">Đã thanh toán</div>
+<div id="depositTotal" class="stat">0đ</div>
+</div>
 
-      </div>
+<div class="card">
+<div class="stat-title">Còn phải trả</div>
+<div id="remainingTotal" class="stat">0đ</div>
+</div>
 
+</div>
 
-      <div class="card">
 
-        <h3 class="section-title">🛒 Tạo đơn hàng</h3>
+<div class="card">
 
-        <div class="order-form">
+<h2 style="margin-bottom:18px">
+🛒 Tạo đơn hàng
+</h2>
 
-          <div class="field">
-            <label>Họ tên</label>
-            <input id="customerName">
-          </div>
+<div class="form-grid">
 
-          <div class="field">
-            <label>Số điện thoại</label>
-            <input id="customerPhone">
-          </div>
+<div class="field">
+<label>Họ tên</label>
+<input id="customerName">
+</div>
 
-          <div class="field full">
-            <label>Địa chỉ nhận hàng</label>
-            <textarea id="customerAddress" rows="2"></textarea>
-          </div>
+<div class="field">
+<label>Số điện thoại</label>
+<input id="customerPhone">
+</div>
 
-          <div class="field">
-            <label>Loại hàng</label>
-            <input id="productType" placeholder="Ví dụ: Áo, quần...">
-          </div>
+<div class="field full">
+<label>Địa chỉ nhận hàng</label>
+<textarea id="address" rows="2"></textarea>
+</div>
 
-          <div class="field">
-            <label>Size</label>
-            <select id="productSize">
-              <option value="">Chọn size</option>
-              <option>S</option>
-              <option>M</option>
-              <option>L</option>
-              <option>XL</option>
-              <option>XXL</option>
-              <option>Không có size</option>
-            </select>
-          </div>
+<div class="field">
+<label>Loại hàng</label>
+<input id="product" placeholder="Ví dụ: Váy, áo...">
+</div>
 
-          <div class="field">
-            <label>Số lượng</label>
-            <input id="quantity" type="number" min="1" value="1" oninput="calculate()">
-          </div>
+<div class="field">
+<label>Size</label>
 
-          <div class="field">
-            <label>Giá / sản phẩm</label>
-            <input id="price" type="number" min="0" placeholder="0" oninput="calculate()">
-          </div>
+<select id="size">
+<option value="">Chọn size</option>
+<option>S</option>
+<option>M</option>
+<option>L</option>
+<option>XL</option>
+<option>XXL</option>
+<option>Không có size</option>
+</select>
 
-          <div class="field">
-            <label>Tiền đã cọc</label>
-            <input id="deposit" type="number" min="0" placeholder="0" oninput="calculate()">
-          </div>
+</div>
 
-          <div class="money-box">
+<div class="field">
+<label>Số lượng</label>
+<input id="quantity" type="number" min="1" value="1" oninput="calculate()">
+</div>
 
-            <div class="money-row">
-              <span>Tổng tiền</span>
-              <strong id="total">0đ</strong>
-            </div>
+<div class="field">
+<label>Giá / sản phẩm</label>
+<input id="price" type="number" min="0" oninput="calculate()">
+</div>
 
-            <div class="money-row">
-              <span>Đã cọc</span>
-              <strong id="depositShow">0đ</strong>
-            </div>
+<div class="field">
+<label>Tiền đã cọc</label>
+<input id="deposit" type="number" min="0" oninput="calculate()">
+</div>
 
-            <div class="money-row">
-              <span>Còn lại</span>
-              <strong id="remaining" class="remaining">0đ</strong>
-            </div>
+<div class="money">
 
-          </div>
+<div class="money-row">
+<span>Tổng tiền</span>
+<strong id="total">0đ</strong>
+</div>
 
-          <div class="field full">
-            <label>Ghi chú</label>
-            <textarea id="note" rows="2" placeholder="Ghi chú thêm nếu có..."></textarea>
-          </div>
+<div class="money-row">
+<span>Đã cọc</span>
+<strong id="depositShow">0đ</strong>
+</div>
 
-          <div class="full">
-            <button class="primary" onclick="createOrder()">
-              🛒 XÁC NHẬN ĐẶT HÀNG
-            </button>
-          </div>
+<div class="money-row">
+<span>Còn lại</span>
+<strong id="remaining">0đ</strong>
+</div>
 
-        </div>
+</div>
 
-      </div>
+<div class="field full">
+<label>Ghi chú</label>
+<textarea id="note" rows="2"></textarea>
+</div>
 
+<div class="full">
 
-      <div class="orders">
+<button class="primary" onclick="createOrder()">
+🛍️ XÁC NHẬN ĐẶT HÀNG
+</button>
 
-        <h3 class="section-title">📋 Đơn hàng của tôi</h3>
+</div>
 
-        <div id="myOrders"></div>
+</div>
 
-      </div>
+</div>
 
-    </div>
 
-  </div>
+<div style="margin-top:30px">
 
+<h2 style="margin-bottom:15px">
+📦 Đơn hàng của tôi
+</h2>
 
-  <!-- ADMIN -->
+<div id="orders"></div>
 
-  <div id="adminPage" class="hidden">
+</div>
 
-    <div class="container">
+</div>
 
-      <div class="welcome">
-        <h2>👑 Quản trị viên</h2>
-        <p>Quản lý toàn bộ đơn hàng.</p>
-      </div>
+</div>
 
-      <div class="cards">
 
-        <div class="card">
-          <div class="stat-title">Tổng đơn</div>
-          <div id="adminOrders" class="stat-value">0</div>
-        </div>
+<!-- ADMIN -->
 
-        <div class="card">
-          <div class="stat-title">Tổng tiền cọc</div>
-          <div id="adminDeposit" class="stat-value">0đ</div>
-        </div>
+<div id="adminPage" class="hidden">
 
-        <div class="card">
-          <div class="stat-title">Tổng còn lại</div>
-          <div id="adminRemaining" class="stat-value">0đ</div>
-        </div>
+<div class="container">
 
-      </div>
+<div class="welcome">
+<h2>👑 Quản trị chacha.doll5</h2>
+<p>Quản lý toàn bộ đơn hàng</p>
+</div>
 
-      <div class="card">
+<div class="cards">
 
-        <h3 class="section-title">📦 Danh sách đơn hàng</h3>
+<div class="card">
+<div class="stat-title">Tổng đơn</div>
+<div id="adminCount" class="stat">0</div>
+</div>
 
-        <div style="overflow-x:auto">
+<div class="card">
+<div class="stat-title">Tổng tiền cọc</div>
+<div id="adminDeposit" class="stat">0đ</div>
+</div>
 
-          <table class="admin-table">
+<div class="card">
+<div class="stat-title">Còn phải thu</div>
+<div id="adminRemaining" class="stat">0đ</div>
+</div>
 
-            <thead>
+</div>
 
-              <tr>
-                <th>Mã đơn</th>
-                <th>Khách hàng</th>
-                <th>SĐT</th>
-                <th>Sản phẩm</th>
-                <th>Size</th>
-                <th>SL</th>
-                <th>Tổng</th>
-                <th>Cọc</th>
-                <th>Còn lại</th>
-                <th>Trạng thái</th>
-                <th></th>
-              </tr>
 
-            </thead>
+<div class="card">
 
-            <tbody id="adminOrderList"></tbody>
+<h2 style="margin-bottom:20px">
+📋 Tất cả đơn hàng
+</h2>
 
-          </table>
+<div class="table-wrap">
 
-        </div>
+<table class="admin-table">
 
-      </div>
+<thead>
 
-    </div>
+<tr>
+<th>Mã đơn</th>
+<th>Khách</th>
+<th>SĐT</th>
+<th>Sản phẩm</th>
+<th>Size</th>
+<th>SL</th>
+<th>Tổng</th>
+<th>Cọc</th>
+<th>Còn lại</th>
+<th>Trạng thái</th>
+</tr>
 
-  </div>
+</thead>
+
+<tbody id="adminOrders"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
 
 <script>
 
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "123456";
+/* ===============================
+SUPABASE
+================================ */
 
-let currentUser = null;
+const SUPABASE_URL =
+"https://lmqvzejtjafvlsawunfx.supabase.co";
+
+const SUPABASE_KEY =
+"DAN_PUBLISHABLE_KEY_CUA_TANH_VAO_DAY";
 
 
-/* STORAGE */
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-function getUsers(){
-  return JSON.parse(localStorage.getItem("users") || "[]");
+
+/* ===============================
+HELPER
+================================ */
+
+function money(value){
+
+return Number(value || 0)
+.toLocaleString("vi-VN")+"đ";
+
 }
 
-function saveUsers(users){
-  localStorage.setItem("users",JSON.stringify(users));
+function showMsg(text,color="#db2777"){
+
+const box=document.getElementById("authMsg");
+
+box.innerText=text;
+box.style.display="block";
+box.style.background="#fdf2f8";
+box.style.color=color;
+
 }
 
-function getOrders(){
-  return JSON.parse(localStorage.getItem("orders") || "[]");
-}
 
-function saveOrders(orders){
-  localStorage.setItem("orders",JSON.stringify(orders));
-}
-
-
-/* AUTH UI */
+/* ===============================
+LOGIN / REGISTER UI
+================================ */
 
 function showLogin(){
 
-  document.getElementById("loginForm").classList.remove("hidden");
-  document.getElementById("registerForm").classList.add("hidden");
+document.getElementById("loginForm")
+.classList.remove("hidden");
 
-  document.getElementById("loginTab").classList.add("active");
-  document.getElementById("registerTab").classList.remove("active");
+document.getElementById("registerForm")
+.classList.add("hidden");
 
-  clearMessage();
+document.getElementById("loginTab")
+.classList.add("active");
+
+document.getElementById("registerTab")
+.classList.remove("active");
+
 }
 
 function showRegister(){
 
-  document.getElementById("loginForm").classList.add("hidden");
-  document.getElementById("registerForm").classList.remove("hidden");
+document.getElementById("loginForm")
+.classList.add("hidden");
 
-  document.getElementById("loginTab").classList.remove("active");
-  document.getElementById("registerTab").classList.add("active");
+document.getElementById("registerForm")
+.classList.remove("hidden");
 
-  clearMessage();
-}
+document.getElementById("loginTab")
+.classList.remove("active");
 
-
-function message(text,color="#4f46e5"){
-
-  const box=document.getElementById("authMessage");
-
-  box.innerText=text;
-  box.style.display="block";
-  box.style.background="#eef2ff";
-  box.style.color=color;
-
-}
-
-function clearMessage(){
-
-  document.getElementById("authMessage").style.display="none";
+document.getElementById("registerTab")
+.classList.add("active");
 
 }
 
 
-/* REGISTER */
+/* ===============================
+REGISTER
+================================ */
 
-function register(){
+async function register(){
 
-  const name=document.getElementById("regName").value.trim();
-  const phone=document.getElementById("regPhone").value.trim();
-  const username=document.getElementById("regUsername").value.trim();
-  const password=document.getElementById("regPassword").value;
+const name =
+document.getElementById("regName").value.trim();
 
-  if(!name || !phone || !username || !password){
+const phone =
+document.getElementById("regPhone").value.trim();
 
-    message("❌ Vui lòng nhập đầy đủ thông tin.","#dc2626");
-    return;
+const email =
+document.getElementById("regEmail").value.trim();
 
-  }
+const password =
+document.getElementById("regPassword").value;
 
-  const users=getUsers();
 
-  if(users.some(u=>u.username===username)){
+if(!name || !phone || !email || !password){
 
-    message("❌ Tên đăng nhập đã tồn tại.","#dc2626");
-    return;
+showMsg("❌ Vui lòng nhập đầy đủ thông tin.","#dc2626");
+return;
 
-  }
+}
 
-  const user={
-    id:"KH-"+Date.now(),
-    name,
-    phone,
-    username,
-    password
-  };
+if(password.length < 6){
 
-  users.push(user);
-
-  saveUsers(users);
-
-  message("✅ Tạo tài khoản thành công! Đang chuyển sang đăng nhập.");
-
-  setTimeout(showLogin,1000);
+showMsg("❌ Mật khẩu phải có ít nhất 6 ký tự.","#dc2626");
+return;
 
 }
 
 
-/* LOGIN */
+const {data,error} =
+await supabaseClient.auth.signUp({
 
-function login(){
+email:email,
 
-  const username=document.getElementById("loginUsername").value.trim();
-  const password=document.getElementById("loginPassword").value;
+password:password,
 
-  if(username===ADMIN_USERNAME && password===ADMIN_PASSWORD){
+options:{
+data:{
+full_name:name,
+phone:phone
+}
+}
 
-    currentUser={
-      id:"ADMIN",
-      name:"Quản trị viên",
-      username:"admin",
-      role:"admin"
-    };
+});
 
-    openApp();
-    return;
 
-  }
+if(error){
 
-  const users=getUsers();
-
-  const user=users.find(
-    u=>u.username===username && u.password===password
-  );
-
-  if(!user){
-
-    message("❌ Sai tên đăng nhập hoặc mật khẩu.","#dc2626");
-    return;
-
-  }
-
-  currentUser={
-    ...user,
-    role:"customer"
-  };
-
-  openApp();
+showMsg("❌ "+error.message,"#dc2626");
+return;
 
 }
 
 
-/* APP */
-
-function openApp(){
-
-  document.getElementById("authPage").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-
-  document.getElementById("userName").innerText=currentUser.name;
-
-  if(currentUser.role==="admin"){
-
-    document.getElementById("customerPage").classList.add("hidden");
-    document.getElementById("adminPage").classList.remove("hidden");
-
-    renderAdmin();
-
-  }else{
-
-    document.getElementById("adminPage").classList.add("hidden");
-    document.getElementById("customerPage").classList.remove("hidden");
-
-    document.getElementById("customerName").value=currentUser.name;
-    document.getElementById("customerPhone").value=currentUser.phone;
-
-    renderCustomer();
-
-  }
+showMsg(
+"✅ Tạo tài khoản thành công. Hãy kiểm tra email nếu Supabase yêu cầu xác nhận."
+);
 
 }
 
 
-function logout(){
+/* ===============================
+LOGIN
+================================ */
 
-  currentUser=null;
+async function login(){
 
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("authPage").classList.remove("hidden");
+const email =
+document.getElementById("loginEmail").value.trim();
 
-  showLogin();
+const password =
+document.getElementById("loginPassword").value;
 
-}
 
+if(!email || !password){
 
-/* MONEY */
-
-function calculate(){
-
-  const quantity=Number(document.getElementById("quantity").value)||0;
-  const price=Number(document.getElementById("price").value)||0;
-  const deposit=Number(document.getElementById("deposit").value)||0;
-
-  const total=quantity*price;
-  const remaining=Math.max(total-deposit,0);
-
-  document.getElementById("total").innerText=formatMoney(total);
-  document.getElementById("depositShow").innerText=formatMoney(deposit);
-  document.getElementById("remaining").innerText=formatMoney(remaining);
+showMsg("❌ Nhập email và mật khẩu.","#dc2626");
+return;
 
 }
 
 
-function formatMoney(number){
+const {data,error} =
+await supabaseClient.auth.signInWithPassword({
 
-  return Number(number).toLocaleString("vi-VN")+"đ";
+email,
+password
+
+});
+
+
+if(error){
+
+showMsg("❌ Email hoặc mật khẩu không đúng.","#dc2626");
+return;
+
+}
+
+await loadApp();
 
 }
 
 
-/* CREATE ORDER */
+/* ===============================
+LOGOUT
+================================ */
 
-function createOrder(){
+async function logout(){
 
-  const name=document.getElementById("customerName").value.trim();
-  const phone=document.getElementById("customerPhone").value.trim();
-  const address=document.getElementById("customerAddress").value.trim();
-  const product=document.getElementById("productType").value.trim();
-  const size=document.getElementById("productSize").value;
-  const quantity=Number(document.getElementById("quantity").value)||0;
-  const price=Number(document.getElementById("price").value)||0;
-  const deposit=Number(document.getElementById("deposit").value)||0;
-  const note=document.getElementById("note").value.trim();
+await supabaseClient.auth.signOut();
 
-  if(!name || !phone || !address || !product || !quantity || !price){
-
-    alert("Vui lòng nhập đầy đủ thông tin đơn hàng.");
-    return;
-
-  }
-
-  const total=quantity*price;
-
-  if(deposit>total){
-
-    alert("Tiền cọc không được lớn hơn tổng tiền.");
-    return;
-
-  }
-
-  const order={
-
-    id:"DH-"+Date.now(),
-
-    userId:currentUser.id,
-
-    name,
-    phone,
-    address,
-    product,
-    size,
-    quantity,
-    price,
-    total,
-    deposit,
-    remaining:total-deposit,
-    note,
-
-    status:"Chờ xác nhận",
-
-    createdAt:new Date().toLocaleString("vi-VN")
-
-  };
-
-  const orders=getOrders();
-
-  orders.unshift(order);
-
-  saveOrders(orders);
-
-  alert("✅ Đặt hàng thành công!\nMã đơn: "+order.id);
-
-  document.getElementById("productType").value="";
-  document.getElementById("productSize").value="";
-  document.getElementById("quantity").value=1;
-  document.getElementById("price").value="";
-  document.getElementById("deposit").value="";
-  document.getElementById("customerAddress").value="";
-  document.getElementById("note").value="";
-
-  calculate();
-  renderCustomer();
+location.reload();
 
 }
 
 
-/* CUSTOMER ORDERS */
+/* ===============================
+LOAD APP
+================================ */
 
-function renderCustomer(){
+async function loadApp(){
 
-  const orders=getOrders()
-    .filter(o=>o.userId===currentUser.id);
+const {data:{user}} =
+await supabaseClient.auth.getUser();
 
-  document.getElementById("myOrderCount").innerText=orders.length;
 
-  const deposit=orders.reduce((sum,o)=>sum+Number(o.deposit),0);
-  const remaining=orders.reduce((sum,o)=>sum+Number(o.remaining),0);
+if(!user){
 
-  document.getElementById("myDeposit").innerText=formatMoney(deposit);
-  document.getElementById("myRemaining").innerText=formatMoney(remaining);
-
-  const box=document.getElementById("myOrders");
-
-  if(!orders.length){
-
-    box.innerHTML=`
-      <div class="card" style="text-align:center;color:#64748b">
-        Chưa có đơn hàng nào.
-      </div>
-    `;
-
-    return;
-
-  }
-
-  box.innerHTML=orders.map(o=>`
-
-    <div class="order">
-
-      <div class="order-head">
-
-        <div>
-          <div class="order-id">${o.id}</div>
-          <small style="color:#64748b">${o.createdAt}</small>
-        </div>
-
-        <span class="status">${o.status}</span>
-
-      </div>
-
-      <div class="order-grid">
-
-        <div class="info">
-          <small>Sản phẩm</small>
-          ${escapeHTML(o.product)}
-        </div>
-
-        <div class="info">
-          <small>Size</small>
-          ${escapeHTML(o.size || "-")}
-        </div>
-
-        <div class="info">
-          <small>Số lượng</small>
-          ${o.quantity}
-        </div>
-
-        <div class="info">
-          <small>Tổng tiền</small>
-          ${formatMoney(o.total)}
-        </div>
-
-        <div class="info">
-          <small>Đã cọc</small>
-          ${formatMoney(o.deposit)}
-        </div>
-
-        <div class="info">
-          <small>Còn lại</small>
-          <strong>${formatMoney(o.remaining)}</strong>
-        </div>
-
-        <div class="info">
-          <small>Địa chỉ</small>
-          ${escapeHTML(o.address)}
-        </div>
-
-        <div class="info">
-          <small>Ghi chú</small>
-          ${escapeHTML(o.note || "-")}
-        </div>
-
-      </div>
-
-    </div>
-
-  `).join("");
+return;
 
 }
+
+
+document
+.getElementById("authPage")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+
+const {data:profile,error} =
+await supabaseClient
+.from("profiles")
+.select("*")
+.eq("id",user.id)
+.single();
+
+
+if(error){
+
+console.error(error);
+return;
+
+}
+
+
+document.getElementById("userName")
+.innerText =
+profile.full_name || user.email;
 
 
 /* ADMIN */
 
-function renderAdmin(){
+if(profile.role==="admin"){
 
-  const orders=getOrders();
+document
+.getElementById("customerPage")
+.classList.add("hidden");
 
-  document.getElementById("adminOrders").innerText=orders.length;
+document
+.getElementById("adminPage")
+.classList.remove("hidden");
 
-  const deposit=orders.reduce((sum,o)=>sum+Number(o.deposit),0);
-  const remaining=orders.reduce((sum,o)=>sum+Number(o.remaining),0);
-
-  document.getElementById("adminDeposit").innerText=formatMoney(deposit);
-  document.getElementById("adminRemaining").innerText=formatMoney(remaining);
-
-  const table=document.getElementById("adminOrderList");
-
-  table.innerHTML=orders.map(o=>`
-
-    <tr>
-
-      <td><strong>${o.id}</strong></td>
-
-      <td>${escapeHTML(o.name)}</td>
-
-      <td>${escapeHTML(o.phone)}</td>
-
-      <td>${escapeHTML(o.product)}</td>
-
-      <td>${escapeHTML(o.size || "-")}</td>
-
-      <td>${o.quantity}</td>
-
-      <td>${formatMoney(o.total)}</td>
-
-      <td>${formatMoney(o.deposit)}</td>
-
-      <td>${formatMoney(o.remaining)}</td>
-
-      <td>
-
-        <select onchange="changeStatus('${o.id}',this.value)">
-
-          ${[
-            "Chờ xác nhận",
-            "Đã cọc",
-            "Đang xử lý",
-            "Đang giao",
-            "Đã giao",
-            "Đã hủy"
-          ].map(s=>`
-
-            <option ${o.status===s?"selected":""}>
-              ${s}
-            </option>
-
-          `).join("")}
-
-        </select>
-
-      </td>
-
-      <td>
-
-        <button
-          onclick="deleteOrder('${o.id}')"
-          class="danger"
-          style="border:0;background:none">
-          Xóa
-        </button>
-
-      </td>
-
-    </tr>
-
-  `).join("");
+await loadAdmin();
 
 }
 
 
-function changeStatus(id,status){
+/* CUSTOMER */
 
-  const orders=getOrders();
+else{
 
-  const order=orders.find(o=>o.id===id);
+document
+.getElementById("adminPage")
+.classList.add("hidden");
 
-  if(order){
+document
+.getElementById("customerPage")
+.classList.remove("hidden");
 
-    order.status=status;
+document.getElementById("customerName")
+.value=profile.full_name || "";
 
-    saveOrders(orders);
+document.getElementById("customerPhone")
+.value=profile.phone || "";
 
-    renderAdmin();
+await loadCustomer();
 
-  }
+}
 
 }
 
 
-function deleteOrder(id){
+/* ===============================
+CALCULATE
+================================ */
 
-  if(!confirm("Bạn chắc chắn muốn xóa đơn này?")) return;
+function calculate(){
 
-  let orders=getOrders();
+const quantity =
+Number(document.getElementById("quantity").value)||0;
 
-  orders=orders.filter(o=>o.id!==id);
+const price =
+Number(document.getElementById("price").value)||0;
 
-  saveOrders(orders);
+const deposit =
+Number(document.getElementById("deposit").value)||0;
 
-  renderAdmin();
+
+const total =
+quantity*price;
+
+const remaining =
+Math.max(total-deposit,0);
+
+
+document.getElementById("total")
+.innerText=money(total);
+
+document.getElementById("depositShow")
+.innerText=money(deposit);
+
+document.getElementById("remaining")
+.innerText=money(remaining);
 
 }
 
 
-/* SECURITY DISPLAY */
+/* ===============================
+CREATE ORDER
+================================ */
 
-function escapeHTML(value){
+async function createOrder(){
 
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+const {data:{user}} =
+await supabaseClient.auth.getUser();
+
+
+if(!user){
+
+alert("Phiên đăng nhập đã hết.");
+return;
 
 }
 
 
-/* INIT */
+const name =
+document.getElementById("customerName").value.trim();
+
+const phone =
+document.getElementById("customerPhone").value.trim();
+
+const address =
+document.getElementById("address").value.trim();
+
+const product =
+document.getElementById("product").value.trim();
+
+const size =
+document.getElementById("size").value;
+
+const quantity =
+Number(document.getElementById("quantity").value)||0;
+
+const price =
+Number(document.getElementById("price").value)||0;
+
+const deposit =
+Number(document.getElementById("deposit").value)||0;
+
+const note =
+document.getElementById("note").value.trim();
+
+
+if(!name || !phone || !address || !product){
+
+alert("Vui lòng nhập đầy đủ thông tin.");
+
+return;
+
+}
+
+
+const total=quantity*price;
+
+
+if(deposit>total){
+
+alert("Tiền cọc không được lớn hơn tổng tiền.");
+
+return;
+
+}
+
+
+/* mã đơn */
+
+const code =
+"DH-"+Date.now();
+
+
+const {error} =
+await supabaseClient
+.from("orders")
+.insert({
+
+order_code:code,
+
+user_id:user.id,
+
+customer_name:name,
+
+phone:phone,
+
+address:address,
+
+product_type:product,
+
+size:size,
+
+quantity:quantity,
+
+price:price,
+
+total_amount:total,
+
+deposit_amount:deposit,
+
+note:note
+
+});
+
+
+if(error){
+
+console.error(error);
+
+alert("❌ Không thể tạo đơn: "+error.message);
+
+return;
+
+}
+
+
+alert("✅ Đặt hàng thành công!\nMã đơn: "+code);
+
+
+/* reset */
+
+document.getElementById("address").value="";
+document.getElementById("product").value="";
+document.getElementById("size").value="";
+document.getElementById("quantity").value=1;
+document.getElementById("price").value="";
+document.getElementById("deposit").value="";
+document.getElementById("note").value="";
+
+calculate();
+
+await loadCustomer();
+
+}
+
+
+/* ===============================
+CUSTOMER ORDERS
+================================ */
+
+async function loadCustomer(){
+
+const {data,error} =
+await supabaseClient
+.from("orders")
+.select("*")
+.order("created_at",{ascending:false});
+
+
+if(error){
+
+console.error(error);
+return;
+
+}
+
+
+const {data:{user}} =
+await supabaseClient.auth.getUser();
+
+
+/*
+RLS của Supabase sẽ chỉ trả
+những đơn mà khách được phép xem.
+*/
+
+const orders=data || [];
+
+
+document.getElementById("orderCount")
+.innerText=orders.length;
+
+
+let deposits=0;
+let remaining=0;
+
+
+orders.forEach(o=>{
+
+deposits+=Number(o.deposit_amount)||0;
+remaining+=Number(o.remaining_amount)||0;
+
+});
+
+
+document.getElementById("depositTotal")
+.innerText=money(deposits);
+
+document.getElementById("remainingTotal")
+.innerText=money(remaining);
+
+
+const box=document.getElementById("orders");
+
+
+if(!orders.length){
+
+box.innerHTML=`
+<div class="card" style="text-align:center;color:#64748b">
+Chưa có đơn hàng.
+</div>
+`;
+
+return;
+
+}
+
+
+box.innerHTML=orders.map(o=>`
+
+<div class="order">
+
+<div class="order-top">
+
+<div>
+<strong>${escapeHtml(o.order_code)}</strong>
+<br>
+<small>${new Date(o.created_at).toLocaleString("vi-VN")}</small>
+</div>
+
+<span class="status">
+${escapeHtml(o.status)}
+</span>
+
+</div>
+
+
+<div class="order-grid">
+
+<div class="info">
+<small>Sản phẩm</small>
+${escapeHtml(o.product_type)}
+</div>
+
+<div class="info">
+<small>Size</small>
+${escapeHtml(o.size || "-")}
+</div>
+
+<div class="info">
+<small>Số lượng</small>
+${o.quantity}
+</div>
+
+<div class="info">
+<small>Tổng tiền</small>
+${money(o.total_amount)}
+</div>
+
+<div class="info">
+<small>Đã cọc</small>
+${money(o.deposit_amount)}
+</div>
+
+<div class="info">
+<small>Còn lại</small>
+<strong>${money(o.remaining_amount)}</strong>
+</div>
+
+<div class="info">
+<small>Địa chỉ</small>
+${escapeHtml(o.address)}
+</div>
+
+<div class="info">
+<small>Vận chuyển</small>
+${escapeHtml(o.shipping_company || "Chưa tạo vận đơn")}
+</div>
+
+<div class="info">
+<small>Mã vận đơn</small>
+${escapeHtml(o.tracking_code || "-")}
+</div>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* ===============================
+ADMIN
+================================ */
+
+async function loadAdmin(){
+
+const {data,error} =
+await supabaseClient
+.from("orders")
+.select("*")
+.order("created_at",{ascending:false});
+
+
+if(error){
+
+console.error(error);
+
+alert("Không tải được đơn hàng.");
+
+return;
+
+}
+
+
+const orders=data || [];
+
+
+document.getElementById("adminCount")
+.innerText=orders.length;
+
+
+let deposits=0;
+let remaining=0;
+
+
+orders.forEach(o=>{
+
+deposits+=Number(o.deposit_amount)||0;
+remaining+=Number(o.remaining_amount)||0;
+
+});
+
+
+document.getElementById("adminDeposit")
+.innerText=money(deposits);
+
+document.getElementById("adminRemaining")
+.innerText=money(remaining);
+
+
+document.getElementById("adminOrders")
+.innerHTML=orders.map(o=>`
+
+<tr>
+
+<td>
+<strong>${escapeHtml(o.order_code)}</strong>
+</td>
+
+<td>
+${escapeHtml(o.customer_name)}
+</td>
+
+<td>
+${escapeHtml(o.phone)}
+</td>
+
+<td>
+${escapeHtml(o.product_type)}
+</td>
+
+<td>
+${escapeHtml(o.size || "-")}
+</td>
+
+<td>
+${o.quantity}
+</td>
+
+<td>
+${money(o.total_amount)}
+</td>
+
+<td>
+${money(o.deposit_amount)}
+</td>
+
+<td>
+${money(o.remaining_amount)}
+</td>
+
+<td>
+
+<select onchange="changeStatus('${o.id}',this.value)">
+
+${[
+"Chờ xác nhận",
+"Đã cọc",
+"Đang xử lý",
+"Đang giao",
+"Đã giao",
+"Đã hủy"
+].map(s=>`
+
+<option ${o.status===s?"selected":""}>
+${s}
+</option>
+
+`).join("")}
+
+</select>
+
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+/* ===============================
+STATUS
+================================ */
+
+async function changeStatus(id,status){
+
+const {error} =
+await supabaseClient
+.from("orders")
+.update({
+status:status,
+updated_at:new Date().toISOString()
+})
+.eq("id",id);
+
+
+if(error){
+
+alert("❌ Không thể cập nhật trạng thái.");
+
+console.error(error);
+
+return;
+
+}
+
+
+await loadAdmin();
+
+}
+
+
+/* ===============================
+ESCAPE
+================================ */
+
+function escapeHtml(value){
+
+return String(value ?? "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+/* ===============================
+AUTO LOGIN CHECK
+================================ */
+
+supabaseClient.auth.onAuthStateChange(
+async(event,session)=>{
+
+if(session){
+
+await loadApp();
+
+}
+
+});
+
+
+loadApp();
 
 calculate();
 
