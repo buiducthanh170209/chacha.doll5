@@ -11,14 +11,14 @@ html = r'''<!DOCTYPE html>
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#fff1f8,#f2efff 55%,#eef6ff);color:#1f2937}
 button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
 .auth{min-height:100vh;display:grid;place-items:center;padding:20px}.authbox,.card{background:#fff;border:1px solid #f1e8f0;border-radius:24px;box-shadow:0 15px 50px #312e8112}.authbox{width:min(430px,100%);padding:32px}.logo{text-align:center;margin-bottom:22px}.logoicon{width:72px;height:72px;margin:auto;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,#ec4899,#8b5cf6);font-size:32px}.logo h1{margin:12px 0 4px}.muted{color:#64748b}.tabs{display:flex;background:#f8fafc;padding:5px;border-radius:13px;margin:18px 0}.tabs button{width:50%;border:0;padding:11px;border-radius:10px;background:transparent}.tabs .active{background:#fff;color:#db2777;font-weight:700;box-shadow:0 2px 10px #0000000a}
-.field{margin:0 0 14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #dbe2ea;border-radius:12px;padding:12px;outline:none;background:#fff}input:focus,select:focus,textarea:focus{border-color:#ec4899}.primary{border:0;color:#fff;background:linear-gradient(135deg,#ec4899,#8b5cf6);padding:13px 18px;border-radius:12px;font-weight:800}.wide{width:100%}.msg{padding:11px;border-radius:10px;margin-top:12px;font-size:14px}
+.field{margin:0 0 14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #dbe2ea;border-radius:12px;padding:12px;outline:none;background:#fff}input:focus,select:focus,textarea:focus{border-color:#ec4899}.primary{border:0;color:#fff;background:linear-gradient(135deg,#ec4899,#8b5cf6);padding:14px 18px;border-radius:12px;font-weight:800;min-height:46px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.wide{width:100%}.msg{padding:11px;border-radius:10px;margin-top:12px;font-size:14px}
 header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blur(12px);border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:13px 22px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px}.brand b{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff}.user{display:flex;gap:10px;align-items:center}.logout{background:#fff;border:1px solid #ddd;padding:9px 13px;border-radius:10px}
 .container{width:min(1150px,100%);margin:auto;padding:28px 18px}.welcome{margin-bottom:22px}.welcome h2{margin:0 0 5px;font-size:28px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}.card{padding:20px}.stat-title{font-size:13px;color:#64748b}.stat{font-size:27px;font-weight:800;margin-top:7px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.full{grid-column:1/-1}.money{background:#fff1f8;border:1px solid #fbcfe8;border-radius:15px;padding:15px}.moneyrow{display:flex;justify-content:space-between;padding:5px 0}.remaining{color:#db2777;font-size:20px;font-weight:800}
-.products{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.product{overflow:hidden;background:#fff;border:1px solid #eee;border-radius:20px;box-shadow:0 10px 30px #00000009}.product img{width:100%;height:190px;object-fit:cover;background:#f8fafc}.pbody{padding:15px}.price{font-weight:900;color:#db2777;font-size:20px}.code{font-size:12px;color:#64748b}.sizes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.sizebtn{border:1px solid #ddd;background:#fff;padding:7px 10px;border-radius:9px}.sizebtn.selected{background:#fce7f3;border-color:#ec4899;color:#be185d;font-weight:700}
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.product{overflow:hidden;background:#fff;border:1px solid #eee;border-radius:20px;box-shadow:0 10px 30px #00000009}.product img{width:100%;height:190px;object-fit:cover;background:#f8fafc}.pbody{padding:15px}.price{font-weight:900;color:#db2777;font-size:20px}.code{font-size:12px;color:#64748b}.sizes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.sizebtn{border:1px solid #ddd;background:#fff;padding:11px 14px;border-radius:9px;min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.sizebtn.selected{background:#fce7f3;border-color:#ec4899;color:#be185d;font-weight:700}
 .order{background:#fff;border:1px solid #eee;border-radius:18px;padding:17px;margin-top:12px}.ordertop{display:flex;justify-content:space-between;gap:10px}.status{background:#fef3c7;color:#92400e;border-radius:99px;padding:5px 9px;font-size:12px;font-weight:700}.oinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.info{background:#f8fafc;border-radius:10px;padding:10px}.info small{display:block;color:#64748b;margin-bottom:3px}.adminnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.adminnav button{border:1px solid #ddd;background:#fff;padding:9px 13px;border-radius:10px}.adminnav .on{background:#fce7f3;border-color:#f9a8d4;color:#be185d;font-weight:700}
 .tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #eee;text-align:left;white-space:nowrap;font-size:13px}.table th{background:#f8fafc}.thumb{width:48px;height:48px;object-fit:cover;border-radius:9px}.danger{border:0;background:#fee2e2;color:#b91c1c;padding:8px 10px;border-radius:9px}.secondary{border:1px solid #ddd;background:#fff;padding:9px 12px;border-radius:9px}.empty{text-align:center;padding:30px;color:#64748b}
-@media(max-width:800px){.cards,.products{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.oinfo{grid-template-columns:1fr 1fr}.user-name{display:none}}
+@media(max-width:800px){button{min-height:44px}.cards,.products{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.oinfo{grid-template-columns:1fr 1fr}.user-name{display:none}}
 </style>
 </head>
 <body>
@@ -161,60 +161,58 @@ let products=[],selected=null,editingId=null;
 
 async function loadProducts(){
  const {data,error}=await db.from("products").select("*").eq("active",true).order("created_at",{ascending:false});
- if(error){document.getElementById("productList").innerHTML='<div class="empty">Không tải được sản phẩm.</div>';console.error(error);return}
+ if(error){productList.innerHTML='<div class="empty">Chưa có bảng products hoặc chưa có sản phẩm.</div>';console.error(error);return}
  products=data||[];
- const list=document.getElementById("productList");
- list.innerHTML=products.length?products.map((p,i)=>{
-   const sizes=Array.isArray(p.sizes)?p.sizes:String(p.sizes||"").split(",").map(x=>x.trim()).filter(Boolean);
-   const pname=p.name||p.product_name||"Sản phẩm";
-   return `<div class="product">
-     <img src="${esc(p.image_url||"https://placehold.co/600x400?text=Product")}" alt="">
-     <div class="pbody">
-       <div class="code">${esc(p.product_code||"")}</div>
-       <h3>${esc(pname)}</h3>
-       <div class="price">${money(p.price)}</div>
-       <div class="muted">Tồn kho: ${Number(p.stock||0)}</div>
-       <div class="sizes">
-         ${sizes.map((sz,j)=>`<button type="button" class="sizebtn size-choice" data-product="${i}" data-size="${esc(sz)}">${esc(sz)}</button>`).join("")}
-       </div>
-       ${p.description?`<div class="muted">${esc(p.description)}</div>`:""}
-       <button type="button" class="primary wide buy-product" data-product="${i}">Chọn sản phẩm</button>
-     </div>
-   </div>`;
- }).join(""):'<div class="empty full">Chưa có sản phẩm.</div>';
-
- list.querySelectorAll(".buy-product").forEach(btn=>{
-   btn.addEventListener("click",function(){
-     const p=products[Number(this.dataset.product)];
-     if(p) chooseProduct(p.id, Array.isArray(p.sizes)?p.sizes[0]:(String(p.sizes||"").split(",")[0]||""));
-   });
- });
- list.querySelectorAll(".size-choice").forEach(btn=>{
-   btn.addEventListener("click",function(){
-     const p=products[Number(this.dataset.product)];
-     if(p) chooseProduct(p.id,this.dataset.size);
-   });
- });
+ productList.innerHTML=products.length?products.map(p=>`
+ <div class="product">
+   <img src="${esc(p.image_url||"https://placehold.co/600x400?text=Product")}" alt="">
+   <div class="pbody"><div class="code">${esc(p.product_code)}</div><h3>${esc(p.name)}</h3>
+   <div class="price">${money(p.price)}</div><div class="muted">Tồn kho: ${Number(p.stock||0)}</div>
+   <div class="sizes">${(Array.isArray(p.sizes)?p.sizes:String(p.sizes||"").split(",").map(x=>x.trim()).filter(Boolean)).map(s=>`<button type="button" class="sizebtn js-size" data-product-id="${esc(p.id)}" data-size="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+   ${p.description?`<div class="muted">${esc(p.description)}</div>`:""}
+   <button type="button" class="primary wide js-choose-product" data-product-id="${esc(p.id)}">Chọn sản phẩm</button>
+   </div>
+ </div>`).join(""):'<div class="empty full">Chưa có sản phẩm.</div>';
 }
+document.addEventListener("click",function(e){
+  const sizeBtn=e.target.closest(".js-size");
+  const chooseBtn=e.target.closest(".js-choose-product");
+  if(sizeBtn){
+    e.preventDefault();
+    const id=sizeBtn.dataset.productId;
+    const size=sizeBtn.dataset.size||"";
+    document.querySelectorAll(".js-size").forEach(b=>b.classList.remove("selected"));
+    sizeBtn.classList.add("selected");
+    chooseProduct(id,size);
+    return;
+  }
+  if(chooseBtn){
+    e.preventDefault();
+    const id=chooseBtn.dataset.productId;
+    const p=products.find(x=>String(x.id)===String(id));
+    if(!p)return;
+    const sizes=Array.isArray(p.sizes)?p.sizes:String(p.sizes||"").split(",").map(x=>x.trim()).filter(Boolean);
+    chooseProduct(id,sizes[0]||"Không có size");
+  }
+},{passive:false});
+
 function chooseProduct(id,size){
- selected=products.find(p=>String(p.id)===String(id));
- if(!selected){console.error("Không tìm thấy sản phẩm:",id);return alert("Không tìm thấy sản phẩm.");}
- const sizes=Array.isArray(selected.sizes)?selected.sizes:String(selected.sizes||"").split(",").map(x=>x.trim()).filter(Boolean);
- const pname=selected.name||selected.product_name||"Sản phẩm";
- document.getElementById("selectedSize").value=size||sizes[0]||"Không có size";
- document.getElementById("selectedProduct").value=pname;
- document.getElementById("selectedCode").value=selected.product_code||"";
- document.getElementById("selectedPrice").textContent=money(selected.price);
- document.getElementById("selectedQty").value=1;
- document.getElementById("orderFormCard").classList.remove("hidden");
- calcSelected();
- document.getElementById("orderFormCard").scrollIntoView({behavior:"smooth",block:"start"});
+  selected=products.find(p=>String(p.id)===String(id));
+  if(!selected){alert("Không tìm thấy sản phẩm.");return;}
+  const sizes=Array.isArray(selected.sizes)?selected.sizes:String(selected.sizes||"").split(",").map(x=>x.trim()).filter(Boolean);
+  const productName=selected.name||selected.product_name||"";
+  document.getElementById("selectedSize").value=size||sizes[0]||"Không có size";
+  document.getElementById("selectedProduct").value=productName;
+  document.getElementById("selectedCode").value=selected.product_code||"";
+  document.getElementById("selectedPrice").textContent=money(selected.price);
+  document.getElementById("selectedQty").value=1;
+  document.getElementById("orderFormCard").classList.remove("hidden");
+  calcSelected();
+  setTimeout(()=>document.getElementById("orderFormCard").scrollIntoView({behavior:"smooth",block:"start"}),50);
 }
 function calcSelected(){
  if(!selected)return;const q=Math.max(1,Number(selectedQty.value)||1),total=q*Number(selected.price||0);
- document.getElementById("selectedTotal").textContent=money(total);
- document.getElementById("selectedPaid").textContent="0đ";
- document.getElementById("selectedRemain").textContent=money(total);
+ selectedTotal.textContent=money(total);selectedPaid.textContent="0đ";selectedRemain.textContent=money(total);
 }
 async function createOrder(){
  if(!selected)return alert("Chọn sản phẩm trước.");
@@ -223,7 +221,7 @@ async function createOrder(){
  if(!name||!phone||!address||q<1)return alert("Vui lòng nhập đủ thông tin.");
  if(Number(selected.stock||0)<q)return alert("Sản phẩm không đủ tồn kho.");
  const total=q*Number(selected.price||0),code="DH-"+Date.now();
- const {error}=await db.from("orders").insert({order_code:code,user_id:user.id,customer_name:name,phone,address,product_type:selected.name,size:selectedSize.value,quantity:q,price:selected.price,total_amount:total,deposit_amount:0,note:note.value.trim()});
+ const {error}=await db.from("orders").insert({order_code:code,user_id:user.id,customer_name:name,phone,address,product_type:(selected.name||selected.product_name||""),size:selectedSize.value,quantity:q,price:selected.price,total_amount:total,deposit_amount:0,note:note.value.trim()});
  if(error){console.error(error);return alert("❌ "+error.message)}
  await db.from("products").update({stock:Number(selected.stock)-q}).eq("id",selected.id);
  alert("✅ Đặt hàng thành công! Mã đơn: "+code);location.reload();
