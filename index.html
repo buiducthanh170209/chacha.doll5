@@ -1466,6 +1466,19 @@ loadApp();
 calculate();
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+const SUPABASE_URL = "https://lmqvzejtjafvlsawunfx.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_1_iez1VtYJbF_gLkqV1ZjA_ngqVnygn";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+console.log("Supabase đã kết nối:", SUPABASE_URL);
+</script>
 </body>
 </html>
