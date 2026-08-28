@@ -1,1484 +1,255 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>chacha.doll5 - Đặt hàng</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>chacha.doll5 • Đặt hàng</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Arial,sans-serif;
-}
-
-body{
-    background:linear-gradient(135deg,#fdf2f8,#eef2ff,#f8fafc);
-    min-height:100vh;
-    color:#1f2937;
-}
-
-.hidden{
-    display:none!important;
-}
-
-button{
-    cursor:pointer;
-}
-
-.auth{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-}
-
-.auth-box{
-    width:100%;
-    max-width:430px;
-    background:white;
-    padding:35px;
-    border-radius:25px;
-    box-shadow:0 20px 60px rgba(0,0,0,.12);
-}
-
-.logo{
-    text-align:center;
-    margin-bottom:25px;
-}
-
-.logo-icon{
-    width:70px;
-    height:70px;
-    margin:auto;
-    border-radius:22px;
-    background:linear-gradient(135deg,#ec4899,#8b5cf6);
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:32px;
-}
-
-.logo h1{
-    margin-top:12px;
-}
-
-.logo p{
-    color:#64748b;
-    margin-top:5px;
-}
-
-.tabs{
-    display:flex;
-    gap:5px;
-    background:#f1f5f9;
-    padding:5px;
-    border-radius:12px;
-    margin-bottom:20px;
-}
-
-.tabs button{
-    flex:1;
-    padding:11px;
-    border:0;
-    border-radius:9px;
-    background:transparent;
-}
-
-.tabs .active{
-    background:white;
-    color:#db2777;
-    font-weight:bold;
-}
-
-.field{
-    margin-bottom:15px;
-}
-
-.field label{
-    display:block;
-    margin-bottom:7px;
-    font-size:14px;
-    font-weight:bold;
-}
-
-input,
-select,
-textarea{
-    width:100%;
-    padding:13px;
-    border:1px solid #dbe2ea;
-    border-radius:11px;
-    outline:none;
-}
-
-input:focus,
-select:focus,
-textarea:focus{
-    border-color:#ec4899;
-}
-
-.primary{
-    width:100%;
-    padding:14px;
-    border:0;
-    border-radius:12px;
-    color:white;
-    font-weight:bold;
-    background:linear-gradient(135deg,#ec4899,#8b5cf6);
-}
-
-.msg{
-    margin-top:15px;
-    padding:12px;
-    border-radius:10px;
-    display:none;
-    font-size:14px;
-}
-
-header{
-    background:white;
-    padding:15px 25px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-bottom:1px solid #e5e7eb;
-    position:sticky;
-    top:0;
-    z-index:5;
-}
-
-.brand{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:20px;
-    font-weight:bold;
-}
-
-.brand span{
-    width:40px;
-    height:40px;
-    border-radius:12px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#ec4899,#8b5cf6);
-    color:white;
-}
-
-.user{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.logout{
-    border:1px solid #ddd;
-    background:white;
-    padding:9px 14px;
-    border-radius:9px;
-}
-
-.container{
-    max-width:1100px;
-    margin:auto;
-    padding:30px 20px;
-}
-
-.welcome{
-    margin-bottom:25px;
-}
-
-.welcome h2{
-    font-size:28px;
-    margin-bottom:6px;
-}
-
-.welcome p{
-    color:#64748b;
-}
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
-    margin-bottom:25px;
-}
-
-.card{
-    background:white;
-    border-radius:18px;
-    padding:20px;
-    box-shadow:0 8px 30px rgba(0,0,0,.06);
-}
-
-.stat-title{
-    color:#64748b;
-    font-size:14px;
-}
-
-.stat{
-    font-size:27px;
-    font-weight:bold;
-    margin-top:8px;
-}
-
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
-}
-
-.full{
-    grid-column:1/-1;
-}
-
-.money{
-    background:#fdf2f8;
-    border:1px solid #fbcfe8;
-    padding:15px;
-    border-radius:12px;
-}
-
-.money-row{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:8px;
-}
-
-.remaining{
-    font-size:20px;
-    color:#db2777;
-    font-weight:bold;
-}
-
-.order{
-    background:white;
-    padding:20px;
-    border-radius:18px;
-    margin-bottom:15px;
-    box-shadow:0 8px 30px rgba(0,0,0,.06);
-}
-
-.order-top{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:15px;
-}
-
-.status{
-    background:#fef3c7;
-    color:#92400e;
-    padding:6px 10px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:bold;
-}
-
-.order-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-}
-
-.info{
-    background:#f8fafc;
-    padding:11px;
-    border-radius:10px;
-}
-
-.info small{
-    color:#64748b;
-    display:block;
-    margin-bottom:4px;
-}
-
-.admin-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.admin-table th,
-.admin-table td{
-    padding:12px;
-    border-bottom:1px solid #eee;
-    text-align:left;
-    white-space:nowrap;
-    font-size:14px;
-}
-
-.admin-table th{
-    background:#f8fafc;
-}
-
-.table-wrap{
-    overflow-x:auto;
-}
-
-@media(max-width:700px){
-
-    header{
-        padding:12px 15px;
-    }
-
-    .user-name{
-        display:none;
-    }
-
-    .container{
-        padding:20px 14px;
-    }
-
-    .cards{
-        grid-template-columns:1fr;
-    }
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
-    .full{
-        grid-column:auto;
-    }
-
-    .order-grid{
-        grid-template-columns:1fr 1fr;
-    }
-
-}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#fff1f8,#f2efff 55%,#eef6ff);color:#1f2937}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.auth{min-height:100vh;display:grid;place-items:center;padding:20px}.authbox,.card{background:#fff;border:1px solid #f1e8f0;border-radius:24px;box-shadow:0 15px 50px #312e8112}.authbox{width:min(430px,100%);padding:32px}.logo{text-align:center;margin-bottom:22px}.logoicon{width:72px;height:72px;margin:auto;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,#ec4899,#8b5cf6);font-size:32px}.logo h1{margin:12px 0 4px}.muted{color:#64748b}.tabs{display:flex;background:#f8fafc;padding:5px;border-radius:13px;margin:18px 0}.tabs button{width:50%;border:0;padding:11px;border-radius:10px;background:transparent}.tabs .active{background:#fff;color:#db2777;font-weight:700;box-shadow:0 2px 10px #0000000a}
+.field{margin:0 0 14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #dbe2ea;border-radius:12px;padding:12px;outline:none;background:#fff}input:focus,select:focus,textarea:focus{border-color:#ec4899}.primary{border:0;color:#fff;background:linear-gradient(135deg,#ec4899,#8b5cf6);padding:13px 18px;border-radius:12px;font-weight:800}.wide{width:100%}.msg{padding:11px;border-radius:10px;margin-top:12px;font-size:14px}
+header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blur(12px);border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:13px 22px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px}.brand b{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff}.user{display:flex;gap:10px;align-items:center}.logout{background:#fff;border:1px solid #ddd;padding:9px 13px;border-radius:10px}
+.container{width:min(1150px,100%);margin:auto;padding:28px 18px}.welcome{margin-bottom:22px}.welcome h2{margin:0 0 5px;font-size:28px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}.card{padding:20px}.stat-title{font-size:13px;color:#64748b}.stat{font-size:27px;font-weight:800;margin-top:7px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.full{grid-column:1/-1}.money{background:#fff1f8;border:1px solid #fbcfe8;border-radius:15px;padding:15px}.moneyrow{display:flex;justify-content:space-between;padding:5px 0}.remaining{color:#db2777;font-size:20px;font-weight:800}
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.product{overflow:hidden;background:#fff;border:1px solid #eee;border-radius:20px;box-shadow:0 10px 30px #00000009}.product img{width:100%;height:190px;object-fit:cover;background:#f8fafc}.pbody{padding:15px}.price{font-weight:900;color:#db2777;font-size:20px}.code{font-size:12px;color:#64748b}.sizes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.sizebtn{border:1px solid #ddd;background:#fff;padding:7px 10px;border-radius:9px}.sizebtn.selected{background:#fce7f3;border-color:#ec4899;color:#be185d;font-weight:700}
+.order{background:#fff;border:1px solid #eee;border-radius:18px;padding:17px;margin-top:12px}.ordertop{display:flex;justify-content:space-between;gap:10px}.status{background:#fef3c7;color:#92400e;border-radius:99px;padding:5px 9px;font-size:12px;font-weight:700}.oinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.info{background:#f8fafc;border-radius:10px;padding:10px}.info small{display:block;color:#64748b;margin-bottom:3px}.adminnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.adminnav button{border:1px solid #ddd;background:#fff;padding:9px 13px;border-radius:10px}.adminnav .on{background:#fce7f3;border-color:#f9a8d4;color:#be185d;font-weight:700}
+.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #eee;text-align:left;white-space:nowrap;font-size:13px}.table th{background:#f8fafc}.thumb{width:48px;height:48px;object-fit:cover;border-radius:9px}.danger{border:0;background:#fee2e2;color:#b91c1c;padding:8px 10px;border-radius:9px}.secondary{border:1px solid #ddd;background:#fff;padding:9px 12px;border-radius:9px}.empty{text-align:center;padding:30px;color:#64748b}
+@media(max-width:800px){.cards,.products{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.oinfo{grid-template-columns:1fr 1fr}.user-name{display:none}}
 </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
-
 <div id="authPage" class="auth">
-
-<div class="auth-box">
-
-<div class="logo">
-<div class="logo-icon">🎀</div>
-<h1>chacha.doll5</h1>
-<p>Hệ thống đặt hàng</p>
+  <div class="authbox">
+    <div class="logo"><div class="logoicon">🎀</div><h1>chacha.doll5</h1><div class="muted">Hệ thống đặt hàng</div></div>
+    <div class="tabs"><button id="tabLogin" class="active" onclick="showAuth('login')">Đăng nhập</button><button id="tabReg" onclick="showAuth('reg')">Tạo tài khoản</button></div>
+    <div id="loginBox">
+      <div class="field"><label>Email</label><input id="loginEmail" type="email"></div>
+      <div class="field"><label>Mật khẩu</label><input id="loginPassword" type="password"></div>
+      <button class="primary wide" onclick="login()">ĐĂNG NHẬP</button>
+    </div>
+    <div id="regBox" class="hidden">
+      <div class="field"><label>Họ tên</label><input id="regName"></div>
+      <div class="field"><label>Số điện thoại</label><input id="regPhone"></div>
+      <div class="field"><label>Email</label><input id="regEmail" type="email"></div>
+      <div class="field"><label>Mật khẩu</label><input id="regPassword" type="password" minlength="6"></div>
+      <button class="primary wide" onclick="register()">TẠO TÀI KHOẢN</button>
+    </div>
+    <div id="authMsg"></div>
+  </div>
 </div>
-
-<div class="tabs">
-<button id="loginTab" class="active" onclick="showLogin()">
-Đăng nhập
-</button>
-
-<button id="registerTab" onclick="showRegister()">
-Tạo tài khoản
-</button>
-</div>
-
-<div id="loginForm">
-
-<div class="field">
-<label>Email</label>
-<input id="loginEmail" type="email" placeholder="Email của bạn">
-</div>
-
-<div class="field">
-<label>Mật khẩu</label>
-<input id="loginPassword" type="password" placeholder="Mật khẩu">
-</div>
-
-<button class="primary" onclick="login()">
-ĐĂNG NHẬP
-</button>
-
-</div>
-
-
-<div id="registerForm" class="hidden">
-
-<div class="field">
-<label>Họ tên</label>
-<input id="regName" placeholder="Nguyễn Văn A">
-</div>
-
-<div class="field">
-<label>Số điện thoại</label>
-<input id="regPhone" placeholder="09xxxxxxxx">
-</div>
-
-<div class="field">
-<label>Email</label>
-<input id="regEmail" type="email" placeholder="Email">
-</div>
-
-<div class="field">
-<label>Mật khẩu</label>
-<input id="regPassword" type="password" placeholder="Ít nhất 6 ký tự">
-</div>
-
-<button class="primary" onclick="register()">
-TẠO TÀI KHOẢN
-</button>
-
-</div>
-
-<div id="authMsg" class="msg"></div>
-
-</div>
-
-</div>
-
-
-<!-- APP -->
 
 <div id="app" class="hidden">
+<header><div class="brand"><b>🎀</b>chacha.doll5</div><div class="user"><span id="userName"></span><button class="logout" onclick="logout()">Đăng xuất</button></div></header>
 
-<header>
-
-<div class="brand">
-<span>🎀</span>
-chacha.doll5
-</div>
-
-<div class="user">
-<div id="userName" class="user-name"></div>
-<button class="logout" onclick="logout()">Đăng xuất</button>
-</div>
-
-</header>
-
-
-<!-- CUSTOMER -->
-
-<div id="customerPage">
-
+<section id="customerPage" class="hidden">
 <div class="container">
-
-<div class="welcome">
-<h2>Xin chào 👋</h2>
-<p>Quản lý đơn hàng của bạn tại chacha.doll5</p>
-</div>
-
-
+<div class="welcome"><h2>Xin chào 👋</h2><div class="muted">Đặt hàng và theo dõi đơn của bạn</div></div>
 <div class="cards">
-
-<div class="card">
-<div class="stat-title">Đơn hàng</div>
-<div id="orderCount" class="stat">0</div>
+<div class="card"><div class="stat-title">Đơn hàng</div><div id="cCount" class="stat">0</div></div>
+<div class="card"><div class="stat-title">Đã thanh toán</div><div id="cPaid" class="stat">0đ</div></div>
+<div class="card"><div class="stat-title">Còn phải trả</div><div id="cRemain" class="stat">0đ</div></div>
 </div>
 
 <div class="card">
-<div class="stat-title">Đã thanh toán</div>
-<div id="depositTotal" class="stat">0đ</div>
+<h2>Sản phẩm</h2><p class="muted">Chọn sản phẩm, size và số lượng.</p>
+<div id="productList" class="products"></div>
 </div>
 
-<div class="card">
-<div class="stat-title">Còn phải trả</div>
-<div id="remainingTotal" class="stat">0đ</div>
+<div id="orderFormCard" class="card hidden" style="margin-top:18px">
+<h2>🛒 Xác nhận đơn</h2><div class="grid">
+<div class="field"><label>Họ tên</label><input id="customerName"></div>
+<div class="field"><label>Số điện thoại</label><input id="customerPhone"></div>
+<div class="field full"><label>Địa chỉ nhận hàng</label><textarea id="address" rows="2"></textarea></div>
+<div class="field"><label>Sản phẩm</label><input id="selectedProduct" readonly></div>
+<div class="field"><label>Mã sản phẩm</label><input id="selectedCode" readonly></div>
+<div class="field"><label>Size</label><input id="selectedSize" readonly></div>
+<div class="field"><label>Số lượng</label><input id="selectedQty" type="number" min="1" value="1" oninput="calcSelected()"></div>
+<div class="money full">
+<div class="moneyrow"><span>Giá / sản phẩm</span><b id="selectedPrice">0đ</b></div>
+<div class="moneyrow"><span>Tổng tiền</span><b id="selectedTotal">0đ</b></div>
+<div class="moneyrow"><span>Đã thanh toán</span><b id="selectedPaid">0đ</b></div>
+<div class="moneyrow"><span>Còn lại</span><b id="selectedRemain" class="remaining">0đ</b></div>
+</div>
+<div class="field full"><label>Ghi chú</label><textarea id="note" rows="2"></textarea></div>
+<div class="full"><button class="primary wide" onclick="createOrder()">🛍️ XÁC NHẬN ĐẶT HÀNG</button></div>
+</div>
 </div>
 
+<div style="margin-top:25px"><h2>📦 Đơn hàng của tôi</h2><div id="customerOrders"></div></div>
 </div>
+</section>
 
-
-<div class="card">
-
-<h2 style="margin-bottom:18px">
-🛒 Tạo đơn hàng
-</h2>
-
-<div class="form-grid">
-
-<div class="field">
-<label>Họ tên</label>
-<input id="customerName">
-</div>
-
-<div class="field">
-<label>Số điện thoại</label>
-<input id="customerPhone">
-</div>
-
-<div class="field full">
-<label>Địa chỉ nhận hàng</label>
-<textarea id="address" rows="2"></textarea>
-</div>
-
-<div class="field">
-<label>Loại hàng</label>
-<input id="product" placeholder="Ví dụ: Váy, áo...">
-</div>
-
-<div class="field">
-<label>Size</label>
-
-<select id="size">
-<option value="">Chọn size</option>
-<option>S</option>
-<option>M</option>
-<option>L</option>
-<option>XL</option>
-<option>XXL</option>
-<option>Không có size</option>
-</select>
-
-</div>
-
-<div class="field">
-<label>Số lượng</label>
-<input id="quantity" type="number" min="1" value="1" oninput="calculate()">
-</div>
-
-<div class="field">
-<label>Giá / sản phẩm</label>
-<input id="price" type="number" min="0" oninput="calculate()">
-</div>
-
-<div class="field">
-<label>Tiền đã cọc</label>
-<input id="deposit" type="number" min="0" oninput="calculate()">
-</div>
-
-<div class="money">
-
-<div class="money-row">
-<span>Tổng tiền</span>
-<strong id="total">0đ</strong>
-</div>
-
-<div class="money-row">
-<span>Đã cọc</span>
-<strong id="depositShow">0đ</strong>
-</div>
-
-<div class="money-row">
-<span>Còn lại</span>
-<strong id="remaining">0đ</strong>
-</div>
-
-</div>
-
-<div class="field full">
-<label>Ghi chú</label>
-<textarea id="note" rows="2"></textarea>
-</div>
-
-<div class="full">
-
-<button class="primary" onclick="createOrder()">
-🛍️ XÁC NHẬN ĐẶT HÀNG
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div style="margin-top:30px">
-
-<h2 style="margin-bottom:15px">
-📦 Đơn hàng của tôi
-</h2>
-
-<div id="orders"></div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- ADMIN -->
-
-<div id="adminPage" class="hidden">
-
+<section id="adminPage" class="hidden">
 <div class="container">
-
-<div class="welcome">
-<h2>👑 Quản trị chacha.doll5</h2>
-<p>Quản lý toàn bộ đơn hàng</p>
-</div>
-
+<div class="welcome"><h2>👑 Quản trị chacha.doll5</h2><div class="muted">Chỉ tài khoản Admin mới nhìn thấy khu vực này.</div></div>
 <div class="cards">
+<div class="card"><div class="stat-title">Tổng đơn</div><div id="aCount" class="stat">0</div></div>
+<div class="card"><div class="stat-title">Đã thanh toán</div><div id="aPaid" class="stat">0đ</div></div>
+<div class="card"><div class="stat-title">Còn phải thu</div><div id="aRemain" class="stat">0đ</div></div>
+</div>
+<div class="adminnav">
+<button id="ordersTab" class="on" onclick="adminTab('orders')">📋 Đơn hàng</button>
+<button id="productsTab" onclick="adminTab('products')">🛍️ Sản phẩm</button>
+</div>
 
+<div id="adminOrdersPanel" class="card">
+<h2>📋 Tất cả đơn hàng</h2><div class="tablewrap"><table class="table"><thead><tr><th>Mã</th><th>Khách</th><th>Sản phẩm</th><th>Size</th><th>SL</th><th>Tổng</th><th>Đã trả</th><th>Còn</th><th>Trạng thái</th></tr></thead><tbody id="adminOrders"></tbody></table></div>
+</div>
+
+<div id="adminProductsPanel" class="hidden">
 <div class="card">
-<div class="stat-title">Tổng đơn</div>
-<div id="adminCount" class="stat">0</div>
+<h2 id="productEditorTitle">➕ Thêm sản phẩm</h2>
+<div class="grid">
+<div class="field"><label>Mã sản phẩm *</label><input id="pCode" placeholder="VD: CC001"></div>
+<div class="field"><label>Tên sản phẩm *</label><input id="pName"></div>
+<div class="field"><label>Giá *</label><input id="pPrice" type="number" min="0"></div>
+<div class="field"><label>Tồn kho</label><input id="pStock" type="number" min="0" value="0"></div>
+<div class="field full"><label>Size (ngăn cách bằng dấu phẩy)</label><input id="pSizes" placeholder="S,M,L,XL"></div>
+<div class="field full"><label>Ảnh sản phẩm</label><input id="pImage" type="file" accept="image/*" onchange="previewImage()"><img id="preview" class="thumb hidden" style="width:100px;height:100px;margin-top:8px"></div>
+<div class="field full"><label>Mô tả</label><textarea id="pDesc" rows="2"></textarea></div>
 </div>
-
-<div class="card">
-<div class="stat-title">Tổng tiền cọc</div>
-<div id="adminDeposit" class="stat">0đ</div>
+<div style="display:flex;gap:8px"><button class="primary" onclick="saveProduct()">💾 Lưu sản phẩm</button><button class="secondary" onclick="clearProductForm()">Hủy</button></div>
 </div>
-
-<div class="card">
-<div class="stat-title">Còn phải thu</div>
-<div id="adminRemaining" class="stat">0đ</div>
+<div class="card" style="margin-top:18px"><h2>Sản phẩm hiện có</h2><div class="tablewrap"><table class="table"><thead><tr><th>Ảnh</th><th>Mã</th><th>Tên</th><th>Giá</th><th>Size</th><th>Tồn</th><th></th></tr></thead><tbody id="adminProducts"></tbody></table></div></div>
 </div>
-
 </div>
-
-
-<div class="card">
-
-<h2 style="margin-bottom:20px">
-📋 Tất cả đơn hàng
-</h2>
-
-<div class="table-wrap">
-
-<table class="admin-table">
-
-<thead>
-
-<tr>
-<th>Mã đơn</th>
-<th>Khách</th>
-<th>SĐT</th>
-<th>Sản phẩm</th>
-<th>Size</th>
-<th>SL</th>
-<th>Tổng</th>
-<th>Cọc</th>
-<th>Còn lại</th>
-<th>Trạng thái</th>
-</tr>
-
-</thead>
-
-<tbody id="adminOrders"></tbody>
-
-</table>
-
+</section>
 </div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 
 <script>
+const SUPABASE_URL="https://lmqvzejtjafvlsawunfx.supabase.co";
+const SUPABASE_KEY="sb_publishable_1_iez1VtYJbF_gLkqV1ZjA_ngqVnygn";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-/* ===============================
-SUPABASE
-================================ */
-
-const SUPABASE_URL =
-"https://lmqvzejtjafvlsawunfx.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_1_iez1VtYJbF_gLkqV1ZjA_ngqVnygn";
-
-
-const supabaseClient =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
-
-
-/* ===============================
-HELPER
-================================ */
-
-function money(value){
-
-return Number(value || 0)
-.toLocaleString("vi-VN")+"đ";
-
-}
-
-function showMsg(text,color="#db2777"){
-
-const box=document.getElementById("authMsg");
-
-box.innerText=text;
-box.style.display="block";
-box.style.background="#fdf2f8";
-box.style.color=color;
-
-}
-
-
-/* ===============================
-LOGIN / REGISTER UI
-================================ */
-
-function showLogin(){
-
-document.getElementById("loginForm")
-.classList.remove("hidden");
-
-document.getElementById("registerForm")
-.classList.add("hidden");
-
-document.getElementById("loginTab")
-.classList.add("active");
-
-document.getElementById("registerTab")
-.classList.remove("active");
-
-}
-
-function showRegister(){
-
-document.getElementById("loginForm")
-.classList.add("hidden");
-
-document.getElementById("registerForm")
-.classList.remove("hidden");
-
-document.getElementById("loginTab")
-.classList.remove("active");
-
-document.getElementById("registerTab")
-.classList.add("active");
-
-}
-
-
-/* ===============================
-REGISTER
-================================ */
+const money=n=>Number(n||0).toLocaleString("vi-VN")+"đ";
+const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+function msg(t,bad=false){const x=document.getElementById("authMsg");x.textContent=t;x.className="msg";x.style.background=bad?"#fee2e2":"#fce7f3";x.style.color=bad?"#b91c1c":"#be185d"}
+function showAuth(which){loginBox.classList.toggle("hidden",which!=="login");regBox.classList.toggle("hidden",which!=="reg");tabLogin.classList.toggle("active",which==="login");tabReg.classList.toggle("active",which==="reg");authMsg.innerHTML=""}
 
 async function register(){
-
-const name =
-document.getElementById("regName").value.trim();
-
-const phone =
-document.getElementById("regPhone").value.trim();
-
-const email =
-document.getElementById("regEmail").value.trim();
-
-const password =
-document.getElementById("regPassword").value;
-
-
-if(!name || !phone || !email || !password){
-
-showMsg("❌ Vui lòng nhập đầy đủ thông tin.","#dc2626");
-return;
-
+ const name=regName.value.trim(),phone=regPhone.value.trim(),email=regEmail.value.trim(),password=regPassword.value;
+ if(!name||!phone||!email||password.length<6)return msg("❌ Nhập đủ thông tin, mật khẩu ít nhất 6 ký tự.",true);
+ const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:name,phone}}});
+ if(error)return msg("❌ "+error.message,true);
+ msg(data.session?"✅ Tạo tài khoản thành công.":"✅ Tạo tài khoản thành công. Kiểm tra email xác nhận nếu đang bật.");
 }
-
-if(password.length < 6){
-
-showMsg("❌ Mật khẩu phải có ít nhất 6 ký tự.","#dc2626");
-return;
-
-}
-
-
-const {data,error} =
-await supabaseClient.auth.signUp({
-
-email:email,
-
-password:password,
-
-options:{
-data:{
-full_name:name,
-phone:phone
-}
-}
-
-});
-
-
-if(error){
-
-showMsg("❌ "+error.message,"#dc2626");
-return;
-
-}
-
-
-showMsg(
-"✅ Tạo tài khoản thành công. Hãy kiểm tra email nếu Supabase yêu cầu xác nhận."
-);
-
-}
-
-
-/* ===============================
-LOGIN
-================================ */
-
 async function login(){
-
-const email =
-document.getElementById("loginEmail").value.trim();
-
-const password =
-document.getElementById("loginPassword").value;
-
-
-if(!email || !password){
-
-showMsg("❌ Nhập email và mật khẩu.","#dc2626");
-return;
-
+ const email=loginEmail.value.trim(),password=loginPassword.value;
+ if(!email||!password)return msg("❌ Nhập email và mật khẩu.",true);
+ const {error}=await db.auth.signInWithPassword({email,password});
+ if(error)return msg("❌ Email hoặc mật khẩu không đúng.",true);
+ await loadApp();
 }
-
-
-const {data,error} =
-await supabaseClient.auth.signInWithPassword({
-
-email,
-password
-
-});
-
-
-if(error){
-
-showMsg("❌ Email hoặc mật khẩu không đúng.","#dc2626");
-return;
-
-}
-
-await loadApp();
-
-}
-
-
-/* ===============================
-LOGOUT
-================================ */
-
-async function logout(){
-
-await supabaseClient.auth.signOut();
-
-location.reload();
-
-}
-
-
-/* ===============================
-LOAD APP
-================================ */
+async function logout(){await db.auth.signOut();location.reload()}
 
 async function loadApp(){
-
-const {data:{user}} =
-await supabaseClient.auth.getUser();
-
-
-if(!user){
-
-return;
-
+ const {data:{user}}=await db.auth.getUser(); if(!user)return;
+ authPage.classList.add("hidden");app.classList.remove("hidden");
+ const {data:p,error}=await db.from("profiles").select("*").eq("id",user.id).single();
+ if(error){console.error(error);alert("Không tìm thấy profile. Hãy kiểm tra bảng profiles.");return}
+ userName.textContent=p.full_name||user.email;
+ if(p.role==="admin"){customerPage.classList.add("hidden");adminPage.classList.remove("hidden");await loadAdmin()}
+ else{adminPage.classList.add("hidden");customerPage.classList.remove("hidden");customerName.value=p.full_name||"";customerPhone.value=p.phone||"";await loadProducts();await loadCustomerOrders()}
 }
 
+let products=[],selected=null,editingId=null;
 
-document
-.getElementById("authPage")
-.classList.add("hidden");
-
-document
-.getElementById("app")
-.classList.remove("hidden");
-
-
-const {data:profile,error} =
-await supabaseClient
-.from("profiles")
-.select("*")
-.eq("id",user.id)
-.single();
-
-
-if(error){
-
-console.error(error);
-return;
-
+async function loadProducts(){
+ const {data,error}=await db.from("products").select("*").eq("active",true).order("created_at",{ascending:false});
+ if(error){productList.innerHTML='<div class="empty">Chưa có bảng products hoặc chưa có sản phẩm.</div>';console.error(error);return}
+ products=data||[];
+ productList.innerHTML=products.length?products.map(p=>`
+ <div class="product">
+   <img src="${esc(p.image_url||"https://placehold.co/600x400?text=Product")}" alt="">
+   <div class="pbody"><div class="code">${esc(p.product_code)}</div><h3>${esc(p.name)}</h3>
+   <div class="price">${money(p.price)}</div><div class="muted">Tồn kho: ${Number(p.stock||0)}</div>
+   <div class="sizes">${(Array.isArray(p.sizes)?p.sizes:String(p.sizes||"").split(",").map(x=>x.trim()).filter(Boolean)).map(s=>`<button class="sizebtn" onclick="chooseProduct('${p.id}','${esc(s)}')">${esc(s)}</button>`).join("")}</div>
+   ${p.description?`<div class="muted">${esc(p.description)}</div>`:""}
+   <button class="primary wide" onclick="chooseProduct('${p.id}','${Array.isArray(p.sizes)?esc(p.sizes[0]||""):esc(String(p.sizes||"").split(",")[0]||"")}')">Chọn sản phẩm</button>
+   </div>
+ </div>`).join(""):'<div class="empty full">Chưa có sản phẩm.</div>';
 }
-
-
-document.getElementById("userName")
-.innerText =
-profile.full_name || user.email;
-
-
-/* ADMIN */
-
-if(profile.role==="admin"){
-
-document
-.getElementById("customerPage")
-.classList.add("hidden");
-
-document
-.getElementById("adminPage")
-.classList.remove("hidden");
-
-await loadAdmin();
-
+function chooseProduct(id,size){
+ selected=products.find(p=>p.id===id);if(!selected)return;
+ const sizes=Array.isArray(selected.sizes)?selected.sizes:String(selected.sizes||"").split(",").map(x=>x.trim()).filter(Boolean);
+ selectedSize.value=size||sizes[0]||"Không có size";selectedProduct.value=selected.name;selectedCode.value=selected.product_code;selectedPrice.textContent=money(selected.price);selectedQty.value=1;orderFormCard.classList.remove("hidden");calcSelected();orderFormCard.scrollIntoView({behavior:"smooth"})
 }
-
-
-/* CUSTOMER */
-
-else{
-
-document
-.getElementById("adminPage")
-.classList.add("hidden");
-
-document
-.getElementById("customerPage")
-.classList.remove("hidden");
-
-document.getElementById("customerName")
-.value=profile.full_name || "";
-
-document.getElementById("customerPhone")
-.value=profile.phone || "";
-
-await loadCustomer();
-
+function calcSelected(){
+ if(!selected)return;const q=Math.max(1,Number(selectedQty.value)||1),total=q*Number(selected.price||0);
+ selectedTotal.textContent=money(total);selectedPaid.textContent="0đ";selectedRemain.textContent=money(total);
 }
-
-}
-
-
-/* ===============================
-CALCULATE
-================================ */
-
-function calculate(){
-
-const quantity =
-Number(document.getElementById("quantity").value)||0;
-
-const price =
-Number(document.getElementById("price").value)||0;
-
-const deposit =
-Number(document.getElementById("deposit").value)||0;
-
-
-const total =
-quantity*price;
-
-const remaining =
-Math.max(total-deposit,0);
-
-
-document.getElementById("total")
-.innerText=money(total);
-
-document.getElementById("depositShow")
-.innerText=money(deposit);
-
-document.getElementById("remaining")
-.innerText=money(remaining);
-
-}
-
-
-/* ===============================
-CREATE ORDER
-================================ */
-
 async function createOrder(){
-
-const {data:{user}} =
-await supabaseClient.auth.getUser();
-
-
-if(!user){
-
-alert("Phiên đăng nhập đã hết.");
-return;
-
+ if(!selected)return alert("Chọn sản phẩm trước.");
+ const {data:{user}}=await db.auth.getUser();if(!user)return;
+ const name=customerName.value.trim(),phone=customerPhone.value.trim(),address=addressEl().trim(),q=Number(selectedQty.value)||0;
+ if(!name||!phone||!address||q<1)return alert("Vui lòng nhập đủ thông tin.");
+ if(Number(selected.stock||0)<q)return alert("Sản phẩm không đủ tồn kho.");
+ const total=q*Number(selected.price||0),code="DH-"+Date.now();
+ const {error}=await db.from("orders").insert({order_code:code,user_id:user.id,customer_name:name,phone,address,product_type:selected.name,size:selectedSize.value,quantity:q,price:selected.price,total_amount:total,deposit_amount:0,note:note.value.trim()});
+ if(error){console.error(error);return alert("❌ "+error.message)}
+ await db.from("products").update({stock:Number(selected.stock)-q}).eq("id",selected.id);
+ alert("✅ Đặt hàng thành công! Mã đơn: "+code);location.reload();
 }
+function addressEl(){return document.getElementById("address").value}
 
-
-const name =
-document.getElementById("customerName").value.trim();
-
-const phone =
-document.getElementById("customerPhone").value.trim();
-
-const address =
-document.getElementById("address").value.trim();
-
-const product =
-document.getElementById("product").value.trim();
-
-const size =
-document.getElementById("size").value;
-
-const quantity =
-Number(document.getElementById("quantity").value)||0;
-
-const price =
-Number(document.getElementById("price").value)||0;
-
-const deposit =
-Number(document.getElementById("deposit").value)||0;
-
-const note =
-document.getElementById("note").value.trim();
-
-
-if(!name || !phone || !address || !product){
-
-alert("Vui lòng nhập đầy đủ thông tin.");
-
-return;
-
+async function getOrders(){
+ const {data,error}=await db.from("orders").select("*").order("created_at",{ascending:false});
+ if(error){console.error(error);return []}return data||[]
 }
-
-
-const total=quantity*price;
-
-
-if(deposit>total){
-
-alert("Tiền cọc không được lớn hơn tổng tiền.");
-
-return;
-
+function paid(o){return Number(o.deposit_amount)||0}
+function remain(o){return Math.max(Number(o.total_amount||0)-paid(o),0)}
+async function loadCustomerOrders(){
+ const orders=await getOrders();cCount.textContent=orders.length;cPaid.textContent=money(orders.reduce((a,o)=>a+paid(o),0));cRemain.textContent=money(orders.reduce((a,o)=>a+remain(o),0));
+ customerOrders.innerHTML=orders.length?orders.map(o=>`<div class="order"><div class="ordertop"><div><b>${esc(o.order_code)}</b><div class="muted">${new Date(o.created_at).toLocaleString("vi-VN")}</div></div><span class="status">${esc(o.status||"Chờ xác nhận")}</span></div><div class="oinfo"><div class="info"><small>Sản phẩm</small>${esc(o.product_type)}</div><div class="info"><small>Size</small>${esc(o.size||"-")}</div><div class="info"><small>Số lượng</small>${o.quantity}</div><div class="info"><small>Tổng tiền</small>${money(o.total_amount)}</div><div class="info"><small>Đã thanh toán</small>${money(paid(o))}</div><div class="info"><small>Còn lại</small><b class="remaining">${money(remain(o))}</b></div><div class="info"><small>Vận chuyển</small>${esc(o.shipping_company||"Chưa tạo vận đơn")}</div><div class="info"><small>Mã vận đơn</small>${esc(o.tracking_code||"-")}</div></div></div>`).join(""):'<div class="empty">Chưa có đơn hàng.</div>'
 }
-
-
-/* mã đơn */
-
-const code =
-"DH-"+Date.now();
-
-
-const {error} =
-await supabaseClient
-.from("orders")
-.insert({
-
-order_code:code,
-
-user_id:user.id,
-
-customer_name:name,
-
-phone:phone,
-
-address:address,
-
-product_type:product,
-
-size:size,
-
-quantity:quantity,
-
-price:price,
-
-total_amount:total,
-
-deposit_amount:deposit,
-
-note:note
-
-});
-
-
-if(error){
-
-console.error(error);
-
-alert("❌ Không thể tạo đơn: "+error.message);
-
-return;
-
-}
-
-
-alert("✅ Đặt hàng thành công!\nMã đơn: "+code);
-
-
-/* reset */
-
-document.getElementById("address").value="";
-document.getElementById("product").value="";
-document.getElementById("size").value="";
-document.getElementById("quantity").value=1;
-document.getElementById("price").value="";
-document.getElementById("deposit").value="";
-document.getElementById("note").value="";
-
-calculate();
-
-await loadCustomer();
-
-}
-
-
-/* ===============================
-CUSTOMER ORDERS
-================================ */
-
-async function loadCustomer(){
-
-const {data,error} =
-await supabaseClient
-.from("orders")
-.select("*")
-.order("created_at",{ascending:false});
-
-
-if(error){
-
-console.error(error);
-return;
-
-}
-
-
-const {data:{user}} =
-await supabaseClient.auth.getUser();
-
-
-/*
-RLS của Supabase sẽ chỉ trả
-những đơn mà khách được phép xem.
-*/
-
-const orders=data || [];
-
-
-document.getElementById("orderCount")
-.innerText=orders.length;
-
-
-let deposits=0;
-let remaining=0;
-
-
-orders.forEach(o=>{
-
-deposits+=Number(o.deposit_amount)||0;
-remaining+=Number(o.remaining_amount)||0;
-
-});
-
-
-document.getElementById("depositTotal")
-.innerText=money(deposits);
-
-document.getElementById("remainingTotal")
-.innerText=money(remaining);
-
-
-const box=document.getElementById("orders");
-
-
-if(!orders.length){
-
-box.innerHTML=`
-<div class="card" style="text-align:center;color:#64748b">
-Chưa có đơn hàng.
-</div>
-`;
-
-return;
-
-}
-
-
-box.innerHTML=orders.map(o=>`
-
-<div class="order">
-
-<div class="order-top">
-
-<div>
-<strong>${escapeHtml(o.order_code)}</strong>
-<br>
-<small>${new Date(o.created_at).toLocaleString("vi-VN")}</small>
-</div>
-
-<span class="status">
-${escapeHtml(o.status)}
-</span>
-
-</div>
-
-
-<div class="order-grid">
-
-<div class="info">
-<small>Sản phẩm</small>
-${escapeHtml(o.product_type)}
-</div>
-
-<div class="info">
-<small>Size</small>
-${escapeHtml(o.size || "-")}
-</div>
-
-<div class="info">
-<small>Số lượng</small>
-${o.quantity}
-</div>
-
-<div class="info">
-<small>Tổng tiền</small>
-${money(o.total_amount)}
-</div>
-
-<div class="info">
-<small>Đã cọc</small>
-${money(o.deposit_amount)}
-</div>
-
-<div class="info">
-<small>Còn lại</small>
-<strong>${money(o.remaining_amount)}</strong>
-</div>
-
-<div class="info">
-<small>Địa chỉ</small>
-${escapeHtml(o.address)}
-</div>
-
-<div class="info">
-<small>Vận chuyển</small>
-${escapeHtml(o.shipping_company || "Chưa tạo vận đơn")}
-</div>
-
-<div class="info">
-<small>Mã vận đơn</small>
-${escapeHtml(o.tracking_code || "-")}
-</div>
-
-</div>
-
-</div>
-
-`).join("");
-
-}
-
-
-/* ===============================
-ADMIN
-================================ */
 
 async function loadAdmin(){
-
-const {data,error} =
-await supabaseClient
-.from("orders")
-.select("*")
-.order("created_at",{ascending:false});
-
-
-if(error){
-
-console.error(error);
-
-alert("Không tải được đơn hàng.");
-
-return;
-
+ const orders=await getOrders();aCount.textContent=orders.length;aPaid.textContent=money(orders.reduce((a,o)=>a+paid(o),0));aRemain.textContent=money(orders.reduce((a,o)=>a+remain(o),0));
+ adminOrders.innerHTML=orders.map(o=>`<tr><td>${esc(o.order_code)}</td><td>${esc(o.customer_name)}<br>${esc(o.phone)}</td><td>${esc(o.product_type)}</td><td>${esc(o.size||"-")}</td><td>${o.quantity}</td><td>${money(o.total_amount)}</td><td>${money(paid(o))}</td><td>${money(remain(o))}</td><td><select onchange="changeStatus('${o.id}',this.value)">${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Đã hủy"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}</select></td></tr>`).join("");
+ await loadAdminProducts()
 }
+async function changeStatus(id,status){const {error}=await db.from("orders").update({status,updated_at:new Date().toISOString()}).eq("id",id);if(error)alert("❌ "+error.message);else loadAdmin()}
 
-
-const orders=data || [];
-
-
-document.getElementById("adminCount")
-.innerText=orders.length;
-
-
-let deposits=0;
-let remaining=0;
-
-
-orders.forEach(o=>{
-
-deposits+=Number(o.deposit_amount)||0;
-remaining+=Number(o.remaining_amount)||0;
-
-});
-
-
-document.getElementById("adminDeposit")
-.innerText=money(deposits);
-
-document.getElementById("adminRemaining")
-.innerText=money(remaining);
-
-
-document.getElementById("adminOrders")
-.innerHTML=orders.map(o=>`
-
-<tr>
-
-<td>
-<strong>${escapeHtml(o.order_code)}</strong>
-</td>
-
-<td>
-${escapeHtml(o.customer_name)}
-</td>
-
-<td>
-${escapeHtml(o.phone)}
-</td>
-
-<td>
-${escapeHtml(o.product_type)}
-</td>
-
-<td>
-${escapeHtml(o.size || "-")}
-</td>
-
-<td>
-${o.quantity}
-</td>
-
-<td>
-${money(o.total_amount)}
-</td>
-
-<td>
-${money(o.deposit_amount)}
-</td>
-
-<td>
-${money(o.remaining_amount)}
-</td>
-
-<td>
-
-<select onchange="changeStatus('${o.id}',this.value)">
-
-${[
-"Chờ xác nhận",
-"Đã cọc",
-"Đang xử lý",
-"Đang giao",
-"Đã giao",
-"Đã hủy"
-].map(s=>`
-
-<option ${o.status===s?"selected":""}>
-${s}
-</option>
-
-`).join("")}
-
-</select>
-
-</td>
-
-</tr>
-
-`).join("");
-
+function adminTab(t){adminOrdersPanel.classList.toggle("hidden",t!=="orders");adminProductsPanel.classList.toggle("hidden",t!=="products");ordersTab.classList.toggle("on",t==="orders");productsTab.classList.toggle("on",t==="products")}
+function previewImage(){const f=pImage.files[0];if(f){preview.src=URL.createObjectURL(f);preview.classList.remove("hidden")}}
+function clearProductForm(){editingId=null;productEditorTitle.textContent="➕ Thêm sản phẩm";pCode.value=pName.value=pPrice.value=pSizes.value=pDesc.value="";pStock.value=0;pImage.value="";preview.classList.add("hidden")}
+async function saveProduct(){
+ const code=pCode.value.trim(),name=pName.value.trim(),price=Number(pPrice.value)||0,stock=Number(pStock.value)||0,sizes=pSizes.value.split(",").map(x=>x.trim()).filter(Boolean),desc=pDesc.value.trim();
+ if(!code||!name||price<0)return alert("Nhập mã, tên và giá.");
+ let image_url=preview.src&&!preview.classList.contains("hidden")?preview.src:"";
+ const file=pImage.files[0];
+ if(file){
+   const ext=file.name.split(".").pop().toLowerCase(),path=`${crypto.randomUUID()}.${ext}`;
+   const {error:e}=await db.storage.from("products").upload(path,file,{upsert:true});
+   if(e)return alert("Upload ảnh lỗi: "+e.message);
+   image_url=db.storage.from("products").getPublicUrl(path).data.publicUrl;
+ }
+ const row={product_code:code,name,price,stock,sizes,description:desc,active:true};
+ if(image_url)row.image_url=image_url;
+ let res;
+ if(editingId)res=await db.from("products").update(row).eq("id",editingId);else res=await db.from("products").insert(row);
+ if(res.error){console.error(res.error);return alert("❌ "+res.error.message)}
+ alert("✅ Đã lưu sản phẩm.");clearProductForm();loadAdminProducts();loadProducts()
 }
-
-
-/* ===============================
-STATUS
-================================ */
-
-async function changeStatus(id,status){
-
-const {error} =
-await supabaseClient
-.from("orders")
-.update({
-status:status,
-updated_at:new Date().toISOString()
-})
-.eq("id",id);
-
-
-if(error){
-
-alert("❌ Không thể cập nhật trạng thái.");
-
-console.error(error);
-
-return;
-
+async function loadAdminProducts(){
+ const {data,error}=await db.from("products").select("*").order("created_at",{ascending:false});
+ if(error){adminProducts.innerHTML=`<tr><td colspan="7">Chưa có bảng products.</td></tr>`;return}
+ adminProducts.innerHTML=(data||[]).map(p=>`<tr><td>${p.image_url?`<img class="thumb" src="${esc(p.image_url)}">`:"-"}</td><td>${esc(p.product_code)}</td><td>${esc(p.name)}</td><td>${money(p.price)}</td><td>${esc(Array.isArray(p.sizes)?p.sizes.join(", "):p.sizes||"-")}</td><td>${p.stock}</td><td><button class="secondary" onclick='editProduct(${JSON.stringify(p)})'>Sửa</button> <button class="danger" onclick="deleteProduct('${p.id}')">Xóa</button></td></tr>`).join("")
 }
+function editProduct(p){editingId=p.id;productEditorTitle.textContent="✏️ Sửa sản phẩm";pCode.value=p.product_code||"";pName.value=p.name||"";pPrice.value=p.price||0;pStock.value=p.stock||0;pSizes.value=Array.isArray(p.sizes)?p.sizes.join(","):p.sizes||"";pDesc.value=p.description||"";if(p.image_url){preview.src=p.image_url;preview.classList.remove("hidden")}adminTab("products");scrollTo(0,0)}
+async function deleteProduct(id){if(!confirm("Xóa sản phẩm này?"))return;const {error}=await db.from("products").update({active:false}).eq("id",id);if(error)alert("❌ "+error.message);else{loadAdminProducts();loadProducts()}}
 
-
-await loadAdmin();
-
-}
-
-
-/* ===============================
-ESCAPE
-================================ */
-
-function escapeHtml(value){
-
-return String(value ?? "")
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
-
-}
-
-
-/* ===============================
-AUTO LOGIN CHECK
-================================ */
-
-supabaseClient.auth.onAuthStateChange(
-async(event,session)=>{
-
-if(session){
-
-await loadApp();
-
-}
-
-});
-
-
+db.auth.onAuthStateChange((event,session)=>{if(session)setTimeout(loadApp,0)});
 loadApp();
-
-calculate();
-
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-const SUPABASE_URL = "https://lmqvzejtjafvlsawunfx.supabase.co";
-
-const SUPABASE_KEY = "sb_publishable_1_iez1VtYJbF_gLkqV1ZjA_ngqVnygn";
-
-const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
-
-console.log("Supabase đã kết nối:", SUPABASE_URL);
 </script>
 </body>
 </html>
+'''
+path = Path("/mnt/data/index.html")
+path.write_text(html, encoding="utf-8")
+print(path)
