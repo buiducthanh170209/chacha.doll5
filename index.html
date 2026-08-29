@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -1232,6 +1231,35 @@ async function saveTracking() {
   showToast("✅ Đã lưu mã vận đơn");
   closeTrackingModal();
   loadAdmin();
+}
+
+
+async function requestCancelOrder(orderId){
+  if(!confirm("Bạn có chắc muốn yêu cầu hủy đơn này?")) return;
+  const {data:{user}}=await db.auth.getUser();
+  if(!user) return alert("Phiên đăng nhập đã hết.");
+  const {data:order,error:findError}=await db.from("orders").select("id,user_id,status").eq("id",orderId).single();
+  if(findError||!order) return alert("❌ Không tìm thấy đơn hàng.");
+  if(order.user_id!==user.id) return alert("❌ Bạn không có quyền hủy đơn này.");
+  if(!["Chờ xác nhận","Đã cọc"].includes(order.status||"Chờ xác nhận")) return alert("❌ Đơn này không còn ở trạng thái có thể yêu cầu hủy.");
+  const {error}=await db.from("orders").update({status:"Khách yêu cầu hủy",updated_at:new Date().toISOString()}).eq("id",orderId).eq("user_id",user.id);
+  if(error){console.error(error);return alert("❌ Không thể gửi yêu cầu hủy: "+error.message);}
+  alert("✅ Đã gửi yêu cầu hủy. Admin sẽ kiểm tra và xử lý.");
+  await loadCustomerOrders();
+}
+
+async function approveCancel(orderId){
+  if(!confirm("Duyệt hủy đơn này?")) return;
+  const {error}=await db.from("orders").update({status:"Đã hủy",updated_at:new Date().toISOString()}).eq("id",orderId).eq("status","Khách yêu cầu hủy");
+  if(error)return alert("❌ Không thể duyệt hủy: "+error.message);
+  await loadAdmin();
+}
+
+async function rejectCancel(orderId){
+  if(!confirm("Từ chối yêu cầu hủy và đưa đơn về Chờ xác nhận?")) return;
+  const {error}=await db.from("orders").update({status:"Chờ xác nhận",updated_at:new Date().toISOString()}).eq("id",orderId).eq("status","Khách yêu cầu hủy");
+  if(error)return alert("❌ Không thể từ chối yêu cầu: "+error.message);
+  await loadAdmin();
 }
 
 function adminTab(t) {
