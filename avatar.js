@@ -146,14 +146,19 @@ async function uploadAvatar(file) {
     const avatarUrl = publicUrlData.publicUrl;
 
     // Lưu URL vào profiles
-    const {
-      error: profileError
-    } = await supabaseClient
-      .from("profiles")
-      .update({
-        avatar_url: avatarUrl
-      })
-      .eq("id", user.id);
+  const {
+  error: profileError
+} = await supabaseClient
+  .from("profiles")
+  .upsert(
+    {
+      id: user.id,
+      avatar_url: avatarUrl
+    },
+    {
+      onConflict: "id"
+    }
+  );
 
     if (profileError) {
       throw profileError;
