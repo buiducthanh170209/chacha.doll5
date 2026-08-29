@@ -182,6 +182,12 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 <section id="adminPage" class="hidden">
 <div class="container">
   <div class="welcome"><h2>👑 Quản trị chacha.doll5</h2><div class="muted">Chỉ tài khoản Admin mới nhìn thấy khu vực này.</div></div>
+  <div id="adminCancelAlert" class="card hidden" style="margin-bottom:22px;background:#fff1f2;border:1px solid #fecdd3">
+    <div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap">
+      <div><b style="color:#be123c;font-size:16px">⚠️ Có yêu cầu hủy đơn mới</b><div id="adminCancelAlertText" class="muted" style="margin-top:5px"></div></div>
+      <button class="primary" style="background:linear-gradient(135deg,#e11d48,#be123c)" onclick="filterAdminOrders('cancelled')">Xem đơn đã hủy</button>
+    </div>
+  </div>
   <div class="cards">
     <div class="card"><div class="stat-title">Tổng đơn</div><div id="aCount" class="stat">0</div></div>
     <div class="card"><div class="stat-title">Đã thanh toán</div><div id="aPaid" class="stat">0đ</div></div>
@@ -1231,6 +1237,28 @@ function renderAdminOrdersGrouped() {
   }).join("");
 }
 
+function updateAdminCancelAlert(orders) {
+  const alertBox = document.getElementById("adminCancelAlert");
+  const text = document.getElementById("adminCancelAlertText");
+  if (!alertBox || !text) return;
+
+  // Đơn khách vừa hủy được đánh dấu bằng nội dung này trong note.
+  const cancelledByCustomer = (orders || []).filter(o =>
+    o.status === "Đã hủy" && String(o.note || "").includes("[Đã hủy bởi khách]")
+  );
+
+  if (!cancelledByCustomer.length) {
+    alertBox.classList.add("hidden");
+    return;
+  }
+
+  const latest = cancelledByCustomer.slice().sort((a,b) =>
+    new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0)
+  )[0];
+  alertBox.classList.remove("hidden");
+  text.textContent = `${cancelledByCustomer.length} đơn khách đã hủy. Mới nhất: ${latest.order_code} • ${latest.customer_name || "Khách hàng"}`;
+}
+
 async function loadAdmin() {
   allAdminOrders = await getAllOrders();
   // Đơn đã hủy vẫn giữ trong database và mục "Đã hủy", nhưng không tính
@@ -1240,6 +1268,7 @@ async function loadAdmin() {
   document.getElementById("aPaid").textContent = money(activeAdminOrders.reduce((a, o) => a + paidOf(o), 0));
   document.getElementById("aRemain").textContent = money(activeAdminOrders.reduce((a, o) => a + remainOf(o), 0));
   updateAdminTabCounts(allAdminOrders);
+  updateAdminCancelAlert(allAdminOrders);
   renderAdminOrdersGrouped();
   await loadAdminProducts();
 }
