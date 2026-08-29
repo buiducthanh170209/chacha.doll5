@@ -300,12 +300,12 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 <!-- Modal xác nhận hủy đơn -->
 <div id="cancelModal" class="modal-bg hidden">
   <div class="modal">
-    <h3 style="margin:0 0 16px">⚠️ Gửi yêu cầu hủy đơn</h3>
-    <p>Bạn có <b>chắc chắn</b> muốn gửi yêu cầu hủy đơn <b id="cancelOrderCode">—</b>?</p>
-    <p class="muted" style="font-size:13px">Đơn sẽ chuyển sang <b>Khách yêu cầu hủy</b>. Admin sẽ nhận thông báo và xử lý.</p>
+    <h3 style="margin:0 0 16px">⚠️ Xác nhận hủy đơn</h3>
+    <p>Bạn có <b>chắc chắn</b> muốn hủy đơn <b id="cancelOrderCode">—</b>?</p>
+    <p class="muted" style="font-size:13px">Bấm <b>Xác nhận hủy</b> để đơn được đưa ngay vào mục <b>Đã hủy</b>. Tổng đơn và tiền còn phải trả sẽ tự động giảm.</p>
     <div class="field"><label>Lý do hủy (tuỳ chọn)</label><textarea id="cancelReason" rows="2" placeholder="Ví dụ: Đặt nhầm size..."></textarea></div>
     <div style="display:flex;gap:10px;margin-top:14px">
-      <button class="danger wide" id="btnConfirmCancel" onclick="confirmCancelOrder()">Gửi yêu cầu hủy</button>
+      <button class="danger wide" id="btnConfirmCancel" onclick="confirmCancelOrder()">✅ Xác nhận hủy</button>
       <button class="secondary" onclick="closeCancelModal()">Không hủy</button>
     </div>
   </div>
@@ -877,9 +877,12 @@ function renderCustomerOrders() {
     orders = orders.filter(o => getStatusGroup(o.status) === customerFilter);
   }
 
-  document.getElementById("cCount").textContent = allCustomerOrders.length;
-  document.getElementById("cPaid").textContent = money(allCustomerOrders.reduce((a, o) => a + paidOf(o), 0));
-  document.getElementById("cRemain").textContent = money(allCustomerOrders.reduce((a, o) => a + remainOf(o), 0));
+  // Đơn đã hủy vẫn nằm trong mục "Đã hủy" nhưng không còn tính vào tổng đơn,
+  // tiền đã thanh toán và số tiền còn phải trả.
+  const activeCustomerOrders = allCustomerOrders.filter(o => getStatusGroup(o.status) !== "cancelled");
+  document.getElementById("cCount").textContent = activeCustomerOrders.length;
+  document.getElementById("cPaid").textContent = money(activeCustomerOrders.reduce((a, o) => a + paidOf(o), 0));
+  document.getElementById("cRemain").textContent = money(activeCustomerOrders.reduce((a, o) => a + remainOf(o), 0));
 
   const box = document.getElementById("customerOrders");
   if (!orders.length) {
@@ -1041,23 +1044,33 @@ async function confirmCancelOrder() {
   if (!cancelOrderId) return;
   const btn = document.getElementById("btnConfirmCancel");
   btn.disabled = true;
+  const oldText = btn.textContent;
+  btn.textContent = "Đang hủy...";
+
   try {
-    const { data: order, error: fetchErr } = await db.from("orders").select("*").eq("id", cancelOrderId).single();
+    const { data: order, error: fetchErr } = await db
+      .from("orders")
+      .select("*")
+      .eq("id", cancelOrderId)
+      .single();
+
     if (fetchErr || !order) {
       alert("❌ Không tìm thấy đơn hàng.");
       return;
     }
+
     if (!canCancel(order)) {
       alert("❌ Đơn này không thể hủy (đã giao / đang giao / đã hủy).");
       return;
     }
 
     const reason = document.getElementById("cancelReason").value.trim();
-    const noteExtra = reason ? `\n[Hủy bởi khách] ${reason}` : "\n[Hủy bởi khách]";
+    const noteExtra = reason ? `\\n[Đã hủy bởi khách] ${reason}` : "\\n[Đã hủy bởi khách]";
 
+    // Hủy NGAY: đơn được đưa thẳng vào mục Đã hủy của cả khách và Admin.
     const { error } = await db.from("orders").update({
-      status: "Khách yêu cầu hủy",
-      payment_status: order.payment_status === "paid" ? order.payment_status : "cancelled",
+      status: "Đã hủy",
+      payment_status: "cancelled",
       note: (order.note || "") + noteExtra,
       updated_at: new Date().toISOString()
     }).eq("id", cancelOrderId);
@@ -1067,25 +1080,38 @@ async function confirmCancelOrder() {
       return;
     }
 
+    // Hoàn lại tồn kho nếu đơn đã trừ kho.
     if (order.product_id && order.quantity) {
       const { data: prod } = await db.from("products").select("stock").eq("id", order.product_id).single();
       if (prod) {
-        await db.from("products").update({ stock: Number(prod.stock || 0) + Number(order.quantity) }).eq("id", order.product_id);
+        await db.from("products").update({
+          stock: Number(prod.stock || 0) + Number(order.quantity)
+        }).eq("id", order.product_id);
       }
-    } else {
+    } else if (order.quantity) {
       const { data: prods } = await db.from("products").select("id, stock").eq("name", order.product_type).limit(1);
       if (prods && prods[0]) {
-        await db.from("products").update({ stock: Number(prods[0].stock || 0) + Number(order.quantity) }).eq("id", prods[0].id);
+        await db.from("products").update({
+          stock: Number(prods[0].stock || 0) + Number(order.quantity)
+        }).eq("id", prods[0].id);
       }
     }
 
-    showToast("📩 Đã gửi yêu cầu hủy đơn " + order.order_code);
-    sendDeviceNotification("📩 Đã gửi yêu cầu hủy", `Đơn ${order.order_code} đang chờ Admin xử lý.`, "cancel-request");
+    showToast("✅ Đã hủy đơn " + order.order_code);
+    sendDeviceNotification(
+      "❌ Đơn đã hủy",
+      `Đơn ${order.order_code} đã được khách hủy và chuyển vào mục Đã hủy.`,
+      "cancelled-" + order.id
+    );
+
     closeCancelModal();
     await loadCustomerOrders();
     await loadProducts();
+
+    // Nếu Admin đang mở ở thiết bị khác, Realtime/polling sẽ đưa đơn vào mục Đã hủy.
   } finally {
     btn.disabled = false;
+    btn.textContent = oldText;
   }
 }
 
@@ -1207,9 +1233,12 @@ function renderAdminOrdersGrouped() {
 
 async function loadAdmin() {
   allAdminOrders = await getAllOrders();
-  document.getElementById("aCount").textContent = allAdminOrders.length;
-  document.getElementById("aPaid").textContent = money(allAdminOrders.reduce((a, o) => a + paidOf(o), 0));
-  document.getElementById("aRemain").textContent = money(allAdminOrders.reduce((a, o) => a + remainOf(o), 0));
+  // Đơn đã hủy vẫn giữ trong database và mục "Đã hủy", nhưng không tính
+  // vào Tổng đơn / Đã thanh toán / Còn phải thu.
+  const activeAdminOrders = allAdminOrders.filter(o => getStatusGroup(o.status) !== "cancelled");
+  document.getElementById("aCount").textContent = activeAdminOrders.length;
+  document.getElementById("aPaid").textContent = money(activeAdminOrders.reduce((a, o) => a + paidOf(o), 0));
+  document.getElementById("aRemain").textContent = money(activeAdminOrders.reduce((a, o) => a + remainOf(o), 0));
   updateAdminTabCounts(allAdminOrders);
   renderAdminOrdersGrouped();
   await loadAdminProducts();
