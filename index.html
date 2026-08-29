@@ -136,6 +136,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
           <tr>
             <th>Mã</th><th>Khách</th><th>Sản phẩm</th><th>Size</th><th>SL</th>
             <th>Tổng</th><th>Đã trả</th><th>Còn</th><th>TT thanh toán</th><th>Trạng thái</th>
+            <th>Vận chuyển</th>
           </tr>
         </thead>
         <tbody id="adminOrders"></tbody>
@@ -530,7 +531,11 @@ async function loadCustomerOrders() {
         <div class="info"><small>Đã thanh toán</small>${money(paidOf(o))}</div>
         <div class="info"><small>Còn lại</small><b class="remaining">${money(remainOf(o))}</b></div>
         <div class="info"><small>Vận chuyển</small>${esc(o.shipping_company || "Chưa tạo vận đơn")}</div>
-        <div class="info"><small>Mã vận đơn</small>${esc(o.tracking_code || "-")}</div>
+        <div class="info"><small>Mã vận đơn</small>
+          ${o.tracking_code
+            ? `<a href="https://spx.vn/?tracking=${encodeURIComponent(o.tracking_code)}" target="_blank" rel="noopener">${esc(o.tracking_code)}</a>`
+            : "-"}
+        </div>
       </div>
       ${remainOf(o) > 0 ? `<div style="margin-top:12px"><button class="primary" onclick='openPayForOrder(${JSON.stringify(o).replace(/'/g, "&#39;")})'>💳 Thanh toán / Xem QR</button></div>` : ""}
     </div>`;
@@ -548,6 +553,7 @@ async function loadAdmin() {
   document.getElementById("aRemain").textContent = money(orders.reduce((a, o) => a + remainOf(o), 0));
   document.getElementById("adminOrders").innerHTML = orders.map(o => {
     const ps = o.payment_status || "pending";
+    const hasTracking = !!o.tracking_code;
     return `<tr>
       <td>${esc(o.order_code)}</td>
       <td>${esc(o.customer_name)}<br>${esc(o.phone)}</td>
@@ -565,6 +571,18 @@ async function loadAdmin() {
           ).join("")}
         </select>
       </td>
+      <td style="white-space:normal;min-width:160px">
+        ${hasTracking
+          ? `<div><b>${esc(o.shipping_company || "SPX")}</b><br>
+               <a href="https://spx.vn/?tracking=${encodeURIComponent(o.tracking_code)}" target="_blank" rel="noopener">
+                 ${esc(o.tracking_code)}
+               </a></div>`
+          : `<button class="primary" style="padding:8px 10px;font-size:12px"
+               onclick="createSpxShipment('${o.id}', this)">
+               🚚 Tạo SPX
+             </button>`
+        }
+      </td>
     </tr>`;
   }).join("");
   await loadAdminProducts();
@@ -574,6 +592,32 @@ async function changeStatus(id, status) {
   const { error } = await db.from("orders").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
   if (error) alert("❌ " + error.message);
   else loadAdmin();
+}
+
+async function createSpxShipment(orderId, btn) {
+  if (!confirm("Tạo vận đơn SPX Express cho đơn này?")) return;
+  const oldText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Đang tạo...";
+  try {
+    const res = await fetch("/api/spx-create-shipment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ order_id: orderId })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      alert("❌ " + (data.message || "Tạo vận đơn thất bại") + (data.detail ? "\n" + JSON.stringify(data.detail) : ""));
+      return;
+    }
+    showToast("✅ Đã tạo SPX: " + data.tracking_code);
+    await loadAdmin();
+  } catch (e) {
+    alert("❌ Lỗi mạng: " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }
 }
 
 function adminTab(t) {
