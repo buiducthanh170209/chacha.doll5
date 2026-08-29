@@ -7,22 +7,65 @@
 <title>chacha.doll5 • Đặt hàng</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#fff1f8,#f2efff 55%,#eef6ff);color:#1f2937}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#fff1f8,#f2efff 55%,#eef6ff);color:#1f2937;line-height:1.5}
 button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
-.auth{min-height:100vh;display:grid;place-items:center;padding:20px}.authbox,.card{background:#fff;border:1px solid #f1e8f0;border-radius:24px;box-shadow:0 15px 50px #312e8112}.authbox{width:min(430px,100%);padding:32px}.logo{text-align:center;margin-bottom:22px}.logoicon{width:72px;height:72px;margin:auto;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,#ec4899,#8b5cf6);font-size:32px;overflow:hidden}.logoicon img{width:100%;height:100%;object-fit:cover}.logo h1{margin:12px 0 4px}.muted{color:#64748b}.tabs{display:flex;background:#f8fafc;padding:5px;border-radius:13px;margin:18px 0}.tabs button{width:50%;border:0;padding:11px;border-radius:10px;background:transparent}.tabs .active{background:#fff;color:#db2777;font-weight:700;box-shadow:0 2px 10px #0000000a}
-.field{margin:0 0 14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #dbe2ea;border-radius:12px;padding:12px;outline:none;background:#fff}input:focus,select:focus,textarea:focus{border-color:#ec4899}.primary{border:0;color:#fff;background:linear-gradient(135deg,#ec4899,#8b5cf6);padding:14px 18px;border-radius:12px;font-weight:800;min-height:46px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.wide{width:100%}.msg{padding:11px;border-radius:10px;margin-top:12px;font-size:14px}
-header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blur(12px);border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:13px 22px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px}.brand b{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;overflow:hidden}.brand b img{width:100%;height:100%;object-fit:cover}.user{display:flex;gap:10px;align-items:center}.logout,.profile-btn{background:#fff;border:1px solid #ddd;padding:9px 13px;border-radius:10px}
-.container{width:min(1150px,100%);margin:auto;padding:28px 18px}.welcome{margin-bottom:22px}.welcome h2{margin:0 0 5px;font-size:28px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}.card{padding:20px}.stat-title{font-size:13px;color:#64748b}.stat{font-size:27px;font-weight:800;margin-top:7px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.full{grid-column:1/-1}.money{background:#fff1f8;border:1px solid #fbcfe8;border-radius:15px;padding:15px}.moneyrow{display:flex;justify-content:space-between;padding:5px 0}.remaining{color:#db2777;font-size:20px;font-weight:800}
-.products{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.product{overflow:hidden;background:#fff;border:1px solid #eee;border-radius:20px;box-shadow:0 10px 30px #00000009}.product img{width:100%;height:190px;object-fit:cover;background:#f8fafc}.pbody{padding:15px}.price{font-weight:900;color:#db2777;font-size:20px}.code{font-size:12px;color:#64748b}.sizes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.sizebtn{border:1px solid #ddd;background:#fff;padding:11px 14px;border-radius:9px;min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.sizebtn.selected{background:#fce7f3;border-color:#ec4899;color:#be185d;font-weight:700}
-.order{background:#fff;border:1px solid #eee;border-radius:18px;padding:17px;margin-top:12px}.ordertop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.status{background:#fef3c7;color:#92400e;border-radius:99px;padding:5px 9px;font-size:12px;font-weight:700}.status-paid{background:#d1fae5;color:#065f46}.status-partial{background:#fef3c7;color:#92400e}.status-pending{background:#e0e7ff;color:#3730a3}.status-cancelled{background:#fee2e2;color:#b91c1c}.oinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.info{background:#f8fafc;border-radius:10px;padding:10px}.info small{display:block;color:#64748b;margin-bottom:3px}.adminnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.adminnav button{border:1px solid #ddd;background:#fff;padding:9px 13px;border-radius:10px}.adminnav .on{background:#fce7f3;border-color:#f9a8d4;color:#be185d;font-weight:700}
-.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #eee;text-align:left;white-space:nowrap;font-size:13px}.table th{background:#f8fafc}.thumb{width:48px;height:48px;object-fit:cover;border-radius:9px}.danger{border:0;background:#fee2e2;color:#b91c1c;padding:8px 10px;border-radius:9px}.secondary{border:1px solid #ddd;background:#fff;padding:9px 12px;border-radius:9px}.empty{text-align:center;padding:30px;color:#64748b}
-.paybox{background:linear-gradient(135deg,#fff1f8,#f5f3ff);border:1px solid #fbcfe8;border-radius:18px;padding:20px;margin-top:16px}.paybox h3{margin:0 0 12px}.qrwrap{text-align:center;margin:16px 0}.qrwrap img{max-width:260px;width:100%;border-radius:12px;border:1px solid #eee;background:#fff}.payinfo{display:grid;gap:8px;font-size:14px}.payinfo b{color:#be185d}.paystatus{display:inline-block;padding:6px 12px;border-radius:99px;font-weight:700;font-size:13px;margin-top:8px}
-.loading{opacity:.6;pointer-events:none}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2937;color:#fff;padding:12px 20px;border-radius:12px;z-index:100;font-size:14px;box-shadow:0 8px 30px #0003}
-.modal-bg{position:fixed;inset:0;background:#0006;display:grid;place-items:center;z-index:50;padding:16px}.modal{background:#fff;border-radius:18px;padding:22px;width:min(420px,100%);box-shadow:0 20px 50px #0003}
+.auth{min-height:100vh;display:grid;place-items:center;padding:24px}.authbox,.card{background:#fff;border:1px solid #f1e8f0;border-radius:24px;box-shadow:0 15px 50px #312e8112}.authbox{width:min(430px,100%);padding:36px}.logo{text-align:center;margin-bottom:24px}.logoicon{width:72px;height:72px;margin:auto;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,#ec4899,#8b5cf6);font-size:32px;overflow:hidden}.logoicon img{width:100%;height:100%;object-fit:cover}.logo h1{margin:14px 0 6px}.muted{color:#64748b}.tabs{display:flex;background:#f8fafc;padding:5px;border-radius:13px;margin:20px 0}.tabs button{width:50%;border:0;padding:12px;border-radius:10px;background:transparent}.tabs .active{background:#fff;color:#db2777;font-weight:700;box-shadow:0 2px 10px #0000000a}
+.field{margin:0 0 16px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}input,select,textarea{width:100%;border:1px solid #dbe2ea;border-radius:12px;padding:13px;outline:none;background:#fff}input:focus,select:focus,textarea:focus{border-color:#ec4899}.primary{border:0;color:#fff;background:linear-gradient(135deg,#ec4899,#8b5cf6);padding:14px 18px;border-radius:12px;font-weight:800;min-height:46px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.wide{width:100%}.msg{padding:12px;border-radius:10px;margin-top:14px;font-size:14px}
+header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blur(12px);border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:14px 24px}.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:19px}.brand b{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;overflow:hidden}.brand b img{width:100%;height:100%;object-fit:cover}.user{display:flex;gap:10px;align-items:center}.logout,.profile-btn{background:#fff;border:1px solid #ddd;padding:10px 14px;border-radius:10px}
+.container{width:min(1200px,100%);margin:auto;padding:32px 20px}.welcome{margin-bottom:28px}.welcome h2{margin:0 0 8px;font-size:30px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:28px}.card{padding:24px}.stat-title{font-size:13px;color:#64748b}.stat{font-size:28px;font-weight:800;margin-top:8px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.full{grid-column:1/-1}.money{background:#fff1f8;border:1px solid #fbcfe8;border-radius:16px;padding:18px}.moneyrow{display:flex;justify-content:space-between;padding:6px 0}.remaining{color:#db2777;font-size:20px;font-weight:800}
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.product{overflow:hidden;background:#fff;border:1px solid #eee;border-radius:20px;box-shadow:0 10px 30px #00000009}.product img{width:100%;height:200px;object-fit:cover;background:#f8fafc}.pbody{padding:18px}.price{font-weight:900;color:#db2777;font-size:20px}.code{font-size:12px;color:#64748b}.sizes{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.sizebtn{border:1px solid #ddd;background:#fff;padding:11px 14px;border-radius:9px;min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.sizebtn.selected{background:#fce7f3;border-color:#ec4899;color:#be185d;font-weight:700}
+/* Order cards - more spacious */
+.order{background:#fff;border:1px solid #eee;border-radius:20px;padding:22px;margin-top:16px;transition:box-shadow .2s,border-color .2s;cursor:pointer}.order:hover{box-shadow:0 12px 36px #00000012;border-color:#f9a8d4}.ordertop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.status{background:#fef3c7;color:#92400e;border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700}.status-paid{background:#d1fae5;color:#065f46}.status-partial{background:#fef3c7;color:#92400e}.status-pending{background:#e0e7ff;color:#3730a3}.status-cancelled{background:#fee2e2;color:#b91c1c}.oinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.info{background:#f8fafc;border-radius:12px;padding:12px}.info small{display:block;color:#64748b;margin-bottom:4px;font-size:12px}
+.adminnav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}.adminnav button{border:1px solid #ddd;background:#fff;padding:11px 16px;border-radius:12px}.adminnav .on{background:#fce7f3;border-color:#f9a8d4;color:#be185d;font-weight:700}
+.tablewrap{overflow:auto;border-radius:14px}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:14px 12px;border-bottom:1px solid #f1f5f9;text-align:left;white-space:nowrap;font-size:13px}.table th{background:#f8fafc;font-weight:700;position:sticky;top:0}.table tbody tr{cursor:pointer;transition:background .15s}.table tbody tr:hover{background:#fdf2f8}.thumb{width:48px;height:48px;object-fit:cover;border-radius:9px}.danger{border:0;background:#fee2e2;color:#b91c1c;padding:8px 12px;border-radius:9px}.secondary{border:1px solid #ddd;background:#fff;padding:10px 14px;border-radius:10px}.empty{text-align:center;padding:40px 20px;color:#64748b}
+.paybox{background:linear-gradient(135deg,#fff1f8,#f5f3ff);border:1px solid #fbcfe8;border-radius:18px;padding:24px;margin-top:18px}.paybox h3{margin:0 0 14px}.qrwrap{text-align:center;margin:18px 0}.qrwrap img{max-width:260px;width:100%;border-radius:12px;border:1px solid #eee;background:#fff}.payinfo{display:grid;gap:10px;font-size:14px}.payinfo b{color:#be185d}.paystatus{display:inline-block;padding:6px 12px;border-radius:99px;font-weight:700;font-size:13px;margin-top:8px}
+.loading{opacity:.6;pointer-events:none}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2937;color:#fff;padding:14px 22px;border-radius:12px;z-index:100;font-size:14px;box-shadow:0 8px 30px #0003}
+.modal-bg{position:fixed;inset:0;background:#0006;display:grid;place-items:center;z-index:50;padding:16px}.modal{background:#fff;border-radius:20px;padding:26px;width:min(520px,100%);box-shadow:0 20px 50px #0003;max-height:90vh;overflow-y:auto}
 .avatar-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #fce7f3;display:block;margin:8px auto}
-.order-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-@media(max-width:800px){button{min-height:44px}.cards,.products{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.oinfo{grid-template-columns:1fr 1fr}.user-name{display:none}}
+.order-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+
+/* Status sections - spacious grouped view */
+.status-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.status-tabs button{border:1px solid #e2e8f0;background:#fff;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:600;color:#64748b;transition:all .15s}
+.status-tabs button:hover{border-color:#f9a8d4;color:#be185d}
+.status-tabs button.on{background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;border-color:transparent}
+.status-tabs .count{display:inline-block;background:#f1f5f9;color:#475569;font-size:11px;padding:2px 8px;border-radius:99px;margin-left:6px;font-weight:700}
+.status-tabs button.on .count{background:#ffffff33;color:#fff}
+.status-section{margin-bottom:32px}
+.status-section-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #f1e8f0}
+.status-section-header h3{margin:0;font-size:17px}
+.status-badge{font-size:12px;font-weight:700;padding:4px 12px;border-radius:99px}
+.badge-pending{background:#e0e7ff;color:#3730a3}
+.badge-processing{background:#fef3c7;color:#92400e}
+.badge-shipping{background:#dbeafe;color:#1e40af}
+.badge-paid{background:#d1fae5;color:#065f46}
+.badge-cancelled{background:#fee2e2;color:#b91c1c}
+.section-count{font-size:13px;color:#64748b;font-weight:600}
+
+/* Clickable customer info */
+.clickable-info{color:#be185d;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.clickable-info:hover{color:#9d174d}
+
+/* Detail modal extras */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.detail-item{background:#f8fafc;border-radius:12px;padding:12px 14px}
+.detail-item small{display:block;color:#64748b;font-size:11px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.03em}
+.detail-item b{font-size:14px;word-break:break-word}
+.detail-full{grid-column:1/-1}
+.modal-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+
+@media(max-width:800px){
+  button{min-height:44px}
+  .cards,.products{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .oinfo{grid-template-columns:1fr 1fr}
+  .user-name{display:none}
+  .detail-grid{grid-template-columns:1fr}
+  .status-tabs{gap:8px}
+  .status-tabs button{padding:9px 12px;font-size:12px}
+}
 </style>
 </head>
 <body>
@@ -76,7 +119,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
   <div id="productList" class="products"></div>
 </div>
 
-<div id="orderFormCard" class="card hidden" style="margin-top:18px">
+<div id="orderFormCard" class="card hidden" style="margin-top:22px">
   <h2>🛒 Xác nhận đơn</h2>
   <div class="grid">
     <div class="field"><label>Họ tên</label><input id="customerName"></div>
@@ -97,7 +140,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
   </div>
 </div>
 
-<div id="paymentCard" class="card hidden" style="margin-top:18px">
+<div id="paymentCard" class="card hidden" style="margin-top:22px">
   <h2>💳 Thanh toán chuyển khoản</h2>
   <div class="paybox">
     <div class="qrwrap"><img id="qrImage" alt="QR thanh toán" src=""></div>
@@ -110,16 +153,28 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
       <div>Mã đơn: <b id="payOrderCode">—</b></div>
       <div>Trạng thái thanh toán: <span id="payStatusBadge" class="paystatus status-pending">⏳ Chờ thanh toán</span></div>
     </div>
-    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
       <button class="primary" id="btnCheckPay" onclick="checkPayment()">🔄 Kiểm tra thanh toán</button>
       <button class="secondary" onclick="closePaymentCard()">Đóng</button>
     </div>
-    <p class="muted" style="margin-top:12px;font-size:13px">Sau khi chuyển khoản đúng số tiền và nội dung, hệ thống sẽ tự cập nhật trong vài phút.</p>
+    <p class="muted" style="margin-top:14px;font-size:13px">Sau khi chuyển khoản đúng số tiền và nội dung, hệ thống sẽ tự cập nhật trong vài phút.</p>
   </div>
 </div>
 
-<div style="margin-top:25px">
-  <h2>📦 Đơn hàng của tôi</h2>
+<div style="margin-top:36px">
+  <h2 style="margin-bottom:8px">📦 Đơn hàng của tôi</h2>
+  <p class="muted" style="margin-bottom:18px">Bấm vào đơn để xem chi tiết đầy đủ.</p>
+
+  <!-- Customer status filter tabs -->
+  <div class="status-tabs" id="customerStatusTabs">
+    <button class="on" data-filter="all" onclick="filterCustomerOrders('all')">Tất cả <span class="count" id="cTabAll">0</span></button>
+    <button data-filter="pending" onclick="filterCustomerOrders('pending')">Chờ xác nhận <span class="count" id="cTabPending">0</span></button>
+    <button data-filter="processing" onclick="filterCustomerOrders('processing')">Đang xử lý <span class="count" id="cTabProcessing">0</span></button>
+    <button data-filter="shipping" onclick="filterCustomerOrders('shipping')">Đang giao <span class="count" id="cTabShipping">0</span></button>
+    <button data-filter="paid" onclick="filterCustomerOrders('paid')">Đã thanh toán <span class="count" id="cTabPaid">0</span></button>
+    <button data-filter="cancelled" onclick="filterCustomerOrders('cancelled')">Đã hủy <span class="count" id="cTabCancelled">0</span></button>
+  </div>
+
   <div id="customerOrders"></div>
 </div>
 </div>
@@ -139,20 +194,24 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
     <button id="settingsTab" onclick="adminTab('settings')">⚙️ Cài đặt web</button>
   </div>
 
-  <div id="adminOrdersPanel" class="card">
-    <h2>📋 Tất cả đơn hàng</h2>
-    <div class="tablewrap">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Mã</th><th>Khách</th><th>SĐT</th><th>Địa chỉ</th><th>Sản phẩm</th><th>Size</th><th>SL</th>
-            <th>Tổng</th><th>Đã trả</th><th>Còn</th><th>TT thanh toán</th><th>Trạng thái</th>
-            <th>Vận chuyển</th>
-          </tr>
-        </thead>
-        <tbody id="adminOrders"></tbody>
-      </table>
+  <div id="adminOrdersPanel">
+    <div class="card" style="margin-bottom:0">
+      <h2 style="margin:0 0 6px">📋 Tất cả đơn hàng</h2>
+      <p class="muted" style="margin:0 0 18px">Bấm vào dòng đơn hoặc tên khách để xem chi tiết đầy đủ.</p>
+
+      <!-- Admin status filter tabs -->
+      <div class="status-tabs" id="adminStatusTabs">
+        <button class="on" data-filter="all" onclick="filterAdminOrders('all')">Tất cả <span class="count" id="aTabAll">0</span></button>
+        <button data-filter="pending" onclick="filterAdminOrders('pending')">Chờ xác nhận <span class="count" id="aTabPending">0</span></button>
+        <button data-filter="processing" onclick="filterAdminOrders('processing')">Đang xử lý <span class="count" id="aTabProcessing">0</span></button>
+        <button data-filter="shipping" onclick="filterAdminOrders('shipping')">Đang giao <span class="count" id="aTabShipping">0</span></button>
+        <button data-filter="paid" onclick="filterAdminOrders('paid')">Đã thanh toán <span class="count" id="aTabPaid">0</span></button>
+        <button data-filter="cancelled" onclick="filterAdminOrders('cancelled')">Đã hủy <span class="count" id="aTabCancelled">0</span></button>
+      </div>
     </div>
+
+    <!-- Grouped sections by status -->
+    <div id="adminOrdersGrouped" style="margin-top:20px"></div>
   </div>
 
   <div id="adminProductsPanel" class="hidden">
@@ -171,12 +230,12 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
         </div>
         <div class="field full"><label>Mô tả</label><textarea id="pDesc" rows="2"></textarea></div>
       </div>
-      <div style="display:flex;gap:8px">
+      <div style="display:flex;gap:10px;margin-top:8px">
         <button class="primary" id="btnSaveProduct" onclick="saveProduct()">💾 Lưu sản phẩm</button>
         <button class="secondary" onclick="clearProductForm()">Hủy</button>
       </div>
     </div>
-    <div class="card" style="margin-top:18px">
+    <div class="card" style="margin-top:22px">
       <h2>Sản phẩm hiện có</h2>
       <div class="tablewrap">
         <table class="table">
@@ -194,7 +253,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
       <div class="grid">
         <div class="field full">
           <label>Logo hiện tại</label>
-          <div id="currentLogoPreview" style="text-align:center;margin:12px 0">
+          <div id="currentLogoPreview" style="text-align:center;margin:14px 0">
             <div class="logoicon" style="width:90px;height:90px;margin:auto" id="settingsLogoBox">🎀</div>
           </div>
         </div>
@@ -208,7 +267,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
           <input id="shopName" value="chacha.doll5">
         </div>
       </div>
-      <div style="display:flex;gap:8px;margin-top:8px">
+      <div style="display:flex;gap:10px;margin-top:10px">
         <button class="primary" onclick="saveLogoSettings()">💾 Lưu logo & tên shop</button>
       </div>
     </div>
@@ -220,7 +279,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 <!-- Modal nhập mã vận đơn -->
 <div id="trackingModal" class="modal-bg hidden">
   <div class="modal">
-    <h3 style="margin:0 0 14px">🚚 Nhập mã vận đơn SPX</h3>
+    <h3 style="margin:0 0 16px">🚚 Nhập mã vận đơn SPX</h3>
     <div class="field"><label>Đơn vị vận chuyển</label><input id="mShipCompany" value="SPX Express"></div>
     <div class="field"><label>Mã vận đơn *</label><input id="mTrackingCode" placeholder="VD: SPXVN..."></div>
     <div class="field">
@@ -232,7 +291,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
         <option value="">Giữ nguyên</option>
       </select>
     </div>
-    <div style="display:flex;gap:8px;margin-top:8px">
+    <div style="display:flex;gap:10px;margin-top:10px">
       <button class="primary wide" onclick="saveTracking()">Lưu</button>
       <button class="secondary" onclick="closeTrackingModal()">Hủy</button>
     </div>
@@ -242,21 +301,21 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 <!-- Modal xác nhận hủy đơn -->
 <div id="cancelModal" class="modal-bg hidden">
   <div class="modal">
-    <h3 style="margin:0 0 14px">⚠️ Xác nhận hủy đơn</h3>
+    <h3 style="margin:0 0 16px">⚠️ Xác nhận hủy đơn</h3>
     <p>Bạn có <b>chắc chắn</b> muốn hủy đơn <b id="cancelOrderCode">—</b>?</p>
     <p class="muted" style="font-size:13px">Hành động này không thể hoàn tác. Tồn kho sẽ được hoàn lại (nếu có).</p>
     <div class="field"><label>Lý do hủy (tuỳ chọn)</label><textarea id="cancelReason" rows="2" placeholder="Ví dụ: Đặt nhầm size..."></textarea></div>
-    <div style="display:flex;gap:8px;margin-top:12px">
+    <div style="display:flex;gap:10px;margin-top:14px">
       <button class="danger wide" id="btnConfirmCancel" onclick="confirmCancelOrder()">Đồng ý hủy đơn</button>
       <button class="secondary" onclick="closeCancelModal()">Không hủy</button>
     </div>
   </div>
 </div>
 
-<!-- Modal hồ sơ / đổi ảnh + SĐT -->
+<!-- Modal hồ sơ -->
 <div id="profileModal" class="modal-bg hidden">
   <div class="modal">
-    <h3 style="margin:0 0 14px">👤 Hồ sơ của tôi</h3>
+    <h3 style="margin:0 0 16px">👤 Hồ sơ của tôi</h3>
     <div style="text-align:center">
       <img id="profileAvatarPreview" class="avatar-preview" src="https://placehold.co/80x80?text=Avatar" alt="Avatar">
     </div>
@@ -267,10 +326,22 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
     <div class="field"><label>Họ tên</label><input id="profileName"></div>
     <div class="field"><label>Số điện thoại</label><input id="profilePhone" type="tel" placeholder="09xxxxxxxx"></div>
     <div class="field"><label>Email</label><input id="profileEmail" readonly style="background:#f8fafc"></div>
-    <div style="display:flex;gap:8px;margin-top:8px">
+    <div style="display:flex;gap:10px;margin-top:10px">
       <button class="primary wide" id="btnSaveProfile" onclick="saveProfile()">💾 Lưu hồ sơ</button>
       <button class="secondary" onclick="closeProfileModal()">Đóng</button>
     </div>
+  </div>
+</div>
+
+<!-- Modal chi tiết đơn hàng (clickable) -->
+<div id="orderDetailModal" class="modal-bg hidden">
+  <div class="modal" style="width:min(560px,100%)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
+      <h3 style="margin:0">📋 Chi tiết đơn hàng</h3>
+      <button class="secondary" style="padding:6px 12px;font-size:13px" onclick="closeOrderDetail()">✕</button>
+    </div>
+    <div id="orderDetailContent"></div>
+    <div class="modal-actions" id="orderDetailActions"></div>
   </div>
 </div>
 
@@ -297,6 +368,41 @@ let cancelOrderId = null;
 let cancelOrderData = null;
 let realtimeChannel = null;
 let notifPermission = false;
+let allCustomerOrders = [];
+let allAdminOrders = [];
+let customerFilter = "all";
+let adminFilter = "all";
+
+/* ===== STATUS HELPERS ===== */
+function getStatusGroup(status) {
+  const s = (status || "").toLowerCase();
+  if (s.includes("hủy") || s === "cancelled") return "cancelled";
+  if (s.includes("đang giao") || s === "shipping") return "shipping";
+  if (s.includes("đang xử lý") || s === "processing") return "processing";
+  if (s.includes("đã giao") || s.includes("đã thanh toán") || s === "paid" || s === "delivered") return "paid";
+  // Chờ xác nhận, Đã cọc, or empty
+  return "pending";
+}
+
+function statusGroupLabel(g) {
+  return {
+    pending: "Chờ xác nhận",
+    processing: "Đang xử lý",
+    shipping: "Đang giao",
+    paid: "Đã thanh toán",
+    cancelled: "Đã hủy"
+  }[g] || g;
+}
+
+function statusGroupBadge(g) {
+  return {
+    pending: "badge-pending",
+    processing: "badge-processing",
+    shipping: "badge-shipping",
+    paid: "badge-paid",
+    cancelled: "badge-cancelled"
+  }[g] || "badge-pending";
+}
 
 function showToast(text) {
   const t = document.createElement("div");
@@ -413,7 +519,6 @@ async function register() {
   try {
     const { data, error } = await db.auth.signUp({ email, password, options: { data: { full_name: name, phone } } });
     if (error) return msg("❌ " + error.message, true);
-    // Tạo / cập nhật profile
     if (data.user) {
       await db.from("profiles").upsert({
         id: data.user.id,
@@ -463,7 +568,6 @@ async function loadApp() {
   const { data: p, error } = await db.from("profiles").select("*").eq("id", user.id).single();
   if (error) {
     console.error(error);
-    // Tự tạo profile nếu thiếu
     await db.from("profiles").upsert({
       id: user.id,
       full_name: user.user_metadata?.full_name || "",
@@ -479,7 +583,6 @@ async function loadApp() {
   document.getElementById("userName").textContent = currentProfile?.full_name || user.email;
   document.getElementById("welcomeName").textContent = currentProfile?.full_name || "";
 
-  // Áp dụng logo nếu có
   applyLogo(currentProfile?.avatar_url);
 
   await requestNotificationPermission();
@@ -721,28 +824,61 @@ function remainOf(o) { return Math.max(Number(o.total_amount || 0) - paidOf(o), 
 function canCancel(o) {
   if (!o) return false;
   if (o.status === "Đã hủy" || o.status === "Đã giao" || o.status === "Đang giao") return false;
-  // Chỉ cho hủy khi còn ở giai đoạn sớm
   return ["Chờ xác nhận", "Đã cọc", "Đang xử lý"].includes(o.status) || !o.status;
 }
 
-async function loadCustomerOrders() {
-  const orders = await getOrdersForCustomer();
-  document.getElementById("cCount").textContent = orders.length;
-  document.getElementById("cPaid").textContent = money(orders.reduce((a, o) => a + paidOf(o), 0));
-  document.getElementById("cRemain").textContent = money(orders.reduce((a, o) => a + remainOf(o), 0));
+/* ===== CUSTOMER ORDERS (grouped + filter) ===== */
+function filterCustomerOrders(filter) {
+  customerFilter = filter;
+  document.querySelectorAll("#customerStatusTabs button").forEach(b => {
+    b.classList.toggle("on", b.dataset.filter === filter);
+  });
+  renderCustomerOrders();
+}
+
+function updateCustomerTabCounts(orders) {
+  const counts = { all: orders.length, pending: 0, processing: 0, shipping: 0, paid: 0, cancelled: 0 };
+  orders.forEach(o => {
+    const g = getStatusGroup(o.status);
+    if (counts[g] !== undefined) counts[g]++;
+  });
+  document.getElementById("cTabAll").textContent = counts.all;
+  document.getElementById("cTabPending").textContent = counts.pending;
+  document.getElementById("cTabProcessing").textContent = counts.processing;
+  document.getElementById("cTabShipping").textContent = counts.shipping;
+  document.getElementById("cTabPaid").textContent = counts.paid;
+  document.getElementById("cTabCancelled").textContent = counts.cancelled;
+}
+
+function renderCustomerOrders() {
+  let orders = allCustomerOrders;
+  if (customerFilter !== "all") {
+    orders = orders.filter(o => getStatusGroup(o.status) === customerFilter);
+  }
+
+  document.getElementById("cCount").textContent = allCustomerOrders.length;
+  document.getElementById("cPaid").textContent = money(allCustomerOrders.reduce((a, o) => a + paidOf(o), 0));
+  document.getElementById("cRemain").textContent = money(allCustomerOrders.reduce((a, o) => a + remainOf(o), 0));
+
   const box = document.getElementById("customerOrders");
-  box.innerHTML = orders.length ? orders.map(o => {
+  if (!orders.length) {
+    box.innerHTML = '<div class="empty">Không có đơn hàng trong mục này.</div>';
+    return;
+  }
+
+  box.innerHTML = orders.map(o => {
     const ps = paymentStatusLabel(o.payment_status || "pending");
     const cancelled = o.status === "Đã hủy";
-    return `<div class="order">
+    const group = getStatusGroup(o.status);
+    return `<div class="order" onclick="openOrderDetail('${o.id}', 'customer')">
       <div class="ordertop">
         <div>
           <b>${esc(o.order_code)}</b>
-          <div class="muted">${new Date(o.created_at).toLocaleString("vi-VN")}</div>
+          <div class="muted" style="margin-top:4px">${new Date(o.created_at).toLocaleString("vi-VN")}</div>
         </div>
         <div style="text-align:right">
           <span class="status ${cancelled ? "status-cancelled" : ""}">${esc(o.status || "Chờ xác nhận")}</span>
-          <div style="margin-top:6px"><span class="paystatus ${ps.cls}">${ps.text}</span></div>
+          <div style="margin-top:8px"><span class="paystatus ${ps.cls}">${ps.text}</span></div>
         </div>
       </div>
       <div class="oinfo">
@@ -752,23 +888,119 @@ async function loadCustomerOrders() {
         <div class="info"><small>Tổng tiền</small>${money(o.total_amount)}</div>
         <div class="info"><small>Đã thanh toán</small>${money(paidOf(o))}</div>
         <div class="info"><small>Còn lại</small><b class="remaining">${money(remainOf(o))}</b></div>
-        <div class="info"><small>SĐT</small>${esc(o.phone || "-")}</div>
+        <div class="info"><small>SĐT</small><span class="clickable-info" onclick="event.stopPropagation();openOrderDetail('${o.id}','customer')">${esc(o.phone || "-")}</span></div>
         <div class="info"><small>Vận chuyển</small>${esc(o.shipping_company || "Chưa tạo vận đơn")}</div>
         <div class="info"><small>Mã vận đơn</small>
           ${o.tracking_code
-            ? `<a href="https://spx.vn/?tracking=${encodeURIComponent(o.tracking_code)}" target="_blank" rel="noopener">${esc(o.tracking_code)}</a>`
+            ? `<a href="https://spx.vn/?tracking=${encodeURIComponent(o.tracking_code)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${esc(o.tracking_code)}</a>`
             : "-"}
         </div>
       </div>
-      <div class="order-actions">
+      <div class="order-actions" onclick="event.stopPropagation()">
         ${!cancelled && remainOf(o) > 0 ? `<button class="primary" onclick='openPayForOrder(${JSON.stringify(o).replace(/'/g, "&#39;")})'>💳 Thanh toán / Xem QR</button>` : ""}
         ${canCancel(o) ? `<button class="danger" onclick="openCancelModal('${o.id}', '${esc(o.order_code)}')">❌ Hủy đơn</button>` : ""}
+        <button class="secondary" onclick="openOrderDetail('${o.id}','customer')">👁 Xem chi tiết</button>
       </div>
     </div>`;
-  }).join("") : '<div class="empty">Chưa có đơn hàng.</div>';
+  }).join("");
+}
+
+async function loadCustomerOrders() {
+  allCustomerOrders = await getOrdersForCustomer();
+  updateCustomerTabCounts(allCustomerOrders);
+  renderCustomerOrders();
 }
 
 function openPayForOrder(o) { showPaymentUI(o); }
+
+/* ========== ORDER DETAIL MODAL ========== */
+async function openOrderDetail(orderId, role) {
+  let order = null;
+  if (role === "customer") {
+    order = allCustomerOrders.find(o => String(o.id) === String(orderId));
+  } else {
+    order = allAdminOrders.find(o => String(o.id) === String(orderId));
+  }
+  if (!order) {
+    // Fallback fetch
+    const { data } = await db.from("orders").select("*").eq("id", orderId).single();
+    order = data;
+  }
+  if (!order) return alert("Không tìm thấy đơn hàng.");
+
+  const ps = paymentStatusLabel(order.payment_status || "pending");
+  const group = getStatusGroup(order.status);
+
+  const content = document.getElementById("orderDetailContent");
+  content.innerHTML = `
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+      <b style="font-size:18px">${esc(order.order_code)}</b>
+      <span class="status-badge ${statusGroupBadge(group)}">${esc(order.status || "Chờ xác nhận")}</span>
+      <span class="paystatus ${ps.cls}">${ps.text}</span>
+    </div>
+    <div class="muted" style="margin-bottom:16px">Tạo lúc: ${new Date(order.created_at).toLocaleString("vi-VN")}</div>
+    <div class="detail-grid">
+      <div class="detail-item"><small>Khách hàng</small><b>${esc(order.customer_name || "-")}</b></div>
+      <div class="detail-item"><small>Số điện thoại</small><b>${esc(order.phone || "-")}</b></div>
+      <div class="detail-item detail-full"><small>Địa chỉ nhận hàng</small><b>${esc(order.address || "-")}</b></div>
+      <div class="detail-item"><small>Sản phẩm</small><b>${esc(order.product_type || "-")}</b></div>
+      <div class="detail-item"><small>Size</small><b>${esc(order.size || "-")}</b></div>
+      <div class="detail-item"><small>Số lượng</small><b>${order.quantity || 0}</b></div>
+      <div class="detail-item"><small>Đơn giá</small><b>${money(order.price)}</b></div>
+      <div class="detail-item"><small>Tổng tiền</small><b>${money(order.total_amount)}</b></div>
+      <div class="detail-item"><small>Đã thanh toán</small><b>${money(paidOf(order))}</b></div>
+      <div class="detail-item"><small>Còn lại</small><b class="remaining">${money(remainOf(order))}</b></div>
+      <div class="detail-item"><small>Đơn vị vận chuyển</small><b>${esc(order.shipping_company || "Chưa có")}</b></div>
+      <div class="detail-item"><small>Mã vận đơn</small><b>${
+        order.tracking_code
+          ? `<a href="https://spx.vn/?tracking=${encodeURIComponent(order.tracking_code)}" target="_blank" rel="noopener">${esc(order.tracking_code)}</a>`
+          : "-"
+      }</b></div>
+      ${order.note ? `<div class="detail-item detail-full"><small>Ghi chú</small><b style="white-space:pre-wrap">${esc(order.note)}</b></div>` : ""}
+    </div>
+  `;
+
+  const actions = document.getElementById("orderDetailActions");
+  let html = "";
+  if (role === "customer") {
+    if (order.status !== "Đã hủy" && remainOf(order) > 0) {
+      html += `<button class="primary" onclick='closeOrderDetail();openPayForOrder(${JSON.stringify(order).replace(/'/g, "&#39;")})'>💳 Thanh toán / Xem QR</button>`;
+    }
+    if (canCancel(order)) {
+      html += `<button class="danger" onclick="closeOrderDetail();openCancelModal('${order.id}','${esc(order.order_code)}')">❌ Hủy đơn</button>`;
+    }
+  } else {
+    // Admin actions
+    html += `
+      <select id="detailStatusSelect" style="padding:10px 12px;border-radius:10px;border:1px solid #ddd">
+        ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Đã hủy","Đã thanh toán"].map(s =>
+          `<option value="${s}" ${order.status === s ? "selected" : ""}>${s}</option>`
+        ).join("")}
+      </select>
+      <button class="primary" onclick="changeStatusFromDetail('${order.id}')">💾 Đổi trạng thái</button>
+      <button class="secondary" onclick="openTrackingModal('${order.id}','${esc(order.shipping_company || "SPX Express")}','${esc(order.tracking_code || "")}');closeOrderDetail()">🚚 Mã vận đơn</button>
+    `;
+  }
+  html += `<button class="secondary" onclick="closeOrderDetail()">Đóng</button>`;
+  actions.innerHTML = html;
+
+  document.getElementById("orderDetailModal").classList.remove("hidden");
+}
+
+function closeOrderDetail() {
+  document.getElementById("orderDetailModal").classList.add("hidden");
+}
+
+async function changeStatusFromDetail(id) {
+  const status = document.getElementById("detailStatusSelect").value;
+  const { error } = await db.from("orders").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
+  if (error) alert("❌ " + error.message);
+  else {
+    showToast("✅ Đã cập nhật trạng thái");
+    closeOrderDetail();
+    loadAdmin();
+  }
+}
 
 /* ========== CANCEL ORDER ========== */
 function openCancelModal(orderId, orderCode) {
@@ -789,7 +1021,6 @@ async function confirmCancelOrder() {
   const btn = document.getElementById("btnConfirmCancel");
   btn.disabled = true;
   try {
-    // Lấy đơn để hoàn stock
     const { data: order, error: fetchErr } = await db.from("orders").select("*").eq("id", cancelOrderId).single();
     if (fetchErr || !order) {
       alert("❌ Không tìm thấy đơn hàng.");
@@ -815,14 +1046,12 @@ async function confirmCancelOrder() {
       return;
     }
 
-    // Hoàn tồn kho nếu có product_id
     if (order.product_id && order.quantity) {
       const { data: prod } = await db.from("products").select("stock").eq("id", order.product_id).single();
       if (prod) {
         await db.from("products").update({ stock: Number(prod.stock || 0) + Number(order.quantity) }).eq("id", order.product_id);
       }
     } else {
-      // Fallback: tìm theo tên sản phẩm
       const { data: prods } = await db.from("products").select("id, stock").eq("name", order.product_type).limit(1);
       if (prods && prods[0]) {
         await db.from("products").update({ stock: Number(prods[0].stock || 0) + Number(order.quantity) }).eq("id", prods[0].id);
@@ -840,48 +1069,128 @@ async function confirmCancelOrder() {
 }
 
 /* ========== ADMIN ========== */
-async function loadAdmin() {
-  const orders = await getAllOrders();
-  document.getElementById("aCount").textContent = orders.length;
-  document.getElementById("aPaid").textContent = money(orders.reduce((a, o) => a + paidOf(o), 0));
-  document.getElementById("aRemain").textContent = money(orders.reduce((a, o) => a + remainOf(o), 0));
-  document.getElementById("adminOrders").innerHTML = orders.map(o => {
-    const ps = o.payment_status || "pending";
-    const hasTracking = !!o.tracking_code;
-    return `<tr>
-      <td>${esc(o.order_code)}</td>
-      <td>${esc(o.customer_name)}</td>
-      <td>${esc(o.phone || "-")}</td>
-      <td style="white-space:normal;max-width:180px;min-width:120px">${esc(o.address || "-")}</td>
-      <td>${esc(o.product_type)}</td>
-      <td>${esc(o.size || "-")}</td>
-      <td>${o.quantity}</td>
-      <td>${money(o.total_amount)}</td>
-      <td>${money(paidOf(o))}</td>
-      <td>${money(remainOf(o))}</td>
-      <td>${esc(ps)}</td>
-      <td>
-        <select onchange="changeStatus('${o.id}', this.value)">
-          ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Đã hủy","Đã thanh toán"].map(s =>
-            `<option ${o.status === s ? "selected" : ""}>${s}</option>`
-          ).join("")}
-        </select>
-      </td>
-      <td style="white-space:normal;min-width:170px">
-        ${hasTracking
-          ? `<div><b>${esc(o.shipping_company || "SPX")}</b><br>
-               <a href="https://spx.vn/?tracking=${encodeURIComponent(o.tracking_code)}" target="_blank" rel="noopener">${esc(o.tracking_code)}</a>
-               <br><button class="secondary" style="margin-top:6px;padding:6px 8px;font-size:12px"
-                 onclick="openTrackingModal('${o.id}','${esc(o.shipping_company || "SPX Express")}','${esc(o.tracking_code)}')">Sửa</button>
-             </div>`
-          : `<button class="primary" style="padding:8px 10px;font-size:12px"
-               onclick="openTrackingModal('${o.id}','SPX Express','')">
-               🚚 Nhập mã SPX
-             </button>`
-        }
-      </td>
-    </tr>`;
+function filterAdminOrders(filter) {
+  adminFilter = filter;
+  document.querySelectorAll("#adminStatusTabs button").forEach(b => {
+    b.classList.toggle("on", b.dataset.filter === filter);
+  });
+  renderAdminOrdersGrouped();
+}
+
+function updateAdminTabCounts(orders) {
+  const counts = { all: orders.length, pending: 0, processing: 0, shipping: 0, paid: 0, cancelled: 0 };
+  orders.forEach(o => {
+    const g = getStatusGroup(o.status);
+    if (counts[g] !== undefined) counts[g]++;
+  });
+  document.getElementById("aTabAll").textContent = counts.all;
+  document.getElementById("aTabPending").textContent = counts.pending;
+  document.getElementById("aTabProcessing").textContent = counts.processing;
+  document.getElementById("aTabShipping").textContent = counts.shipping;
+  document.getElementById("aTabPaid").textContent = counts.paid;
+  document.getElementById("aTabCancelled").textContent = counts.cancelled;
+}
+
+function renderAdminOrdersGrouped() {
+  let orders = allAdminOrders;
+  if (adminFilter !== "all") {
+    orders = orders.filter(o => getStatusGroup(o.status) === adminFilter);
+  }
+
+  const groups = {
+    pending: [],
+    processing: [],
+    shipping: [],
+    paid: [],
+    cancelled: []
+  };
+  orders.forEach(o => {
+    const g = getStatusGroup(o.status);
+    if (groups[g]) groups[g].push(o);
+  });
+
+  const order = ["pending", "processing", "shipping", "paid", "cancelled"];
+  const container = document.getElementById("adminOrdersGrouped");
+
+  if (!orders.length) {
+    container.innerHTML = '<div class="card"><div class="empty">Không có đơn hàng trong mục này.</div></div>';
+    return;
+  }
+
+  // If filtering to one group, just show one section. If "all", show all non-empty groups.
+  const toShow = adminFilter === "all" ? order.filter(g => groups[g].length > 0) : [adminFilter];
+
+  container.innerHTML = toShow.map(g => {
+    const list = groups[g] || [];
+    if (!list.length) return "";
+    return `
+      <div class="status-section card">
+        <div class="status-section-header">
+          <span class="status-badge ${statusGroupBadge(g)}">${statusGroupLabel(g)}</span>
+          <span class="section-count">${list.length} đơn</span>
+        </div>
+        <div class="tablewrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Mã</th><th>Khách</th><th>SĐT</th><th>Địa chỉ</th><th>Sản phẩm</th><th>Size</th><th>SL</th>
+                <th>Tổng</th><th>Đã trả</th><th>Còn</th><th>TT thanh toán</th><th>Trạng thái</th>
+                <th>Vận chuyển</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.map(o => {
+                const ps = o.payment_status || "pending";
+                const hasTracking = !!o.tracking_code;
+                return `<tr onclick="openOrderDetail('${o.id}','admin')">
+                  <td><b>${esc(o.order_code)}</b></td>
+                  <td><span class="clickable-info" onclick="event.stopPropagation();openOrderDetail('${o.id}','admin')">${esc(o.customer_name)}</span></td>
+                  <td><span class="clickable-info" onclick="event.stopPropagation();openOrderDetail('${o.id}','admin')">${esc(o.phone || "-")}</span></td>
+                  <td style="white-space:normal;max-width:160px;min-width:110px">${esc(o.address || "-")}</td>
+                  <td>${esc(o.product_type)}</td>
+                  <td>${esc(o.size || "-")}</td>
+                  <td>${o.quantity}</td>
+                  <td>${money(o.total_amount)}</td>
+                  <td>${money(paidOf(o))}</td>
+                  <td>${money(remainOf(o))}</td>
+                  <td>${esc(ps)}</td>
+                  <td onclick="event.stopPropagation()">
+                    <select onchange="changeStatus('${o.id}', this.value)">
+                      ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Đã hủy","Đã thanh toán"].map(s =>
+                        `<option ${o.status === s ? "selected" : ""}>${s}</option>`
+                      ).join("")}
+                    </select>
+                  </td>
+                  <td style="white-space:normal;min-width:160px" onclick="event.stopPropagation()">
+                    ${hasTracking
+                      ? `<div><b>${esc(o.shipping_company || "SPX")}</b><br>
+                           <a href="https://spx.vn/?tracking=${encodeURIComponent(o.tracking_code)}" target="_blank" rel="noopener">${esc(o.tracking_code)}</a>
+                           <br><button class="secondary" style="margin-top:6px;padding:6px 8px;font-size:12px"
+                             onclick="openTrackingModal('${o.id}','${esc(o.shipping_company || "SPX Express")}','${esc(o.tracking_code)}')">Sửa</button>
+                         </div>`
+                      : `<button class="primary" style="padding:8px 10px;font-size:12px"
+                           onclick="openTrackingModal('${o.id}','SPX Express','')">
+                           🚚 Nhập mã SPX
+                         </button>`
+                    }
+                  </td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
   }).join("");
+}
+
+async function loadAdmin() {
+  allAdminOrders = await getAllOrders();
+  document.getElementById("aCount").textContent = allAdminOrders.length;
+  document.getElementById("aPaid").textContent = money(allAdminOrders.reduce((a, o) => a + paidOf(o), 0));
+  document.getElementById("aRemain").textContent = money(allAdminOrders.reduce((a, o) => a + remainOf(o), 0));
+  updateAdminTabCounts(allAdminOrders);
+  renderAdminOrdersGrouped();
   await loadAdminProducts();
 }
 
@@ -1091,7 +1400,6 @@ async function saveProfile() {
       const path = `avatars/${currentUser.id}.${ext}`;
       const { error: upErr } = await db.storage.from("products").upload(path, file, { upsert: true });
       if (upErr) {
-        // Thử bucket avatars nếu có, fallback products
         console.warn(upErr);
         const path2 = `avatar_${currentUser.id}.${ext}`;
         const { error: e2 } = await db.storage.from("products").upload(path2, file, { upsert: true });
@@ -1150,7 +1458,6 @@ async function saveLogoSettings() {
     logoUrl = db.storage.from("products").getPublicUrl(path).data.publicUrl;
   }
 
-  // Lưu vào profile admin (dùng làm logo site)
   const { error } = await db.from("profiles").update({
     avatar_url: logoUrl || null,
     full_name: shopName,
