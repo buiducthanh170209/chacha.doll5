@@ -300,12 +300,12 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 <!-- Modal xác nhận hủy đơn -->
 <div id="cancelModal" class="modal-bg hidden">
   <div class="modal">
-    <h3 style="margin:0 0 16px">⚠️ Xác nhận hủy đơn</h3>
-    <p>Bạn có <b>chắc chắn</b> muốn hủy đơn <b id="cancelOrderCode">—</b>?</p>
-    <p class="muted" style="font-size:13px">Hành động này không thể hoàn tác. Tồn kho sẽ được hoàn lại (nếu có).</p>
+    <h3 style="margin:0 0 16px">⚠️ Gửi yêu cầu hủy đơn</h3>
+    <p>Bạn có <b>chắc chắn</b> muốn gửi yêu cầu hủy đơn <b id="cancelOrderCode">—</b>?</p>
+    <p class="muted" style="font-size:13px">Đơn sẽ chuyển sang <b>Khách yêu cầu hủy</b>. Admin sẽ nhận thông báo và xử lý.</p>
     <div class="field"><label>Lý do hủy (tuỳ chọn)</label><textarea id="cancelReason" rows="2" placeholder="Ví dụ: Đặt nhầm size..."></textarea></div>
     <div style="display:flex;gap:10px;margin-top:14px">
-      <button class="danger wide" id="btnConfirmCancel" onclick="confirmCancelOrder()">Đồng ý hủy đơn</button>
+      <button class="danger wide" id="btnConfirmCancel" onclick="confirmCancelOrder()">Gửi yêu cầu hủy</button>
       <button class="secondary" onclick="closeCancelModal()">Không hủy</button>
     </div>
   </div>
@@ -482,9 +482,9 @@ function setupRealtime(role) {
           showToast("🟡 Đơn " + o.order_code + " nhận một phần tiền.");
           sendDeviceNotification("🟡 Nhận tiền một phần", `Đơn ${o.order_code} đã nhận một phần thanh toán.`, "pay-partial-" + o.id);
         }
-        if (o.status === "Đã hủy" && old.status !== "Đã hủy") {
-          showToast("⚠️ Khách đã hủy đơn " + o.order_code);
-          sendDeviceNotification("⚠️ Đơn bị hủy", `Khách hàng đã hủy đơn ${o.order_code}.`, "cancel-" + o.id);
+        if ((o.status === "Đã hủy" || o.status === "Khách yêu cầu hủy") && o.status !== old.status) {
+          showToast("⚠️ Yêu cầu hủy đơn: " + o.order_code);
+          sendDeviceNotification("⚠️ Yêu cầu hủy đơn", `Khách hàng yêu cầu hủy ${o.order_code}.`, "cancel-" + o.id);
         }
         loadAdmin();
       } else if (role === "customer" && currentUser && o.user_id === currentUser.id) {
@@ -504,6 +504,28 @@ function setupRealtime(role) {
       }
     })
     .subscribe();
+
+  // Fallback: kiểm tra đơn mới/yêu cầu hủy định kỳ nếu Realtime chưa được bật trong Supabase.
+  if (role === "admin") {
+    clearInterval(window.adminOrderPoll);
+    window.adminOrderPoll = setInterval(async () => {
+      const latest = await getAllOrders();
+      const oldMap = new Map((allAdminOrders || []).map(x => [String(x.id), x.status]));
+      latest.forEach(o => {
+        const oldStatus = oldMap.get(String(o.id));
+        if (o.status === "Khách yêu cầu hủy" && oldStatus !== "Khách yêu cầu hủy") {
+          showToast("⚠️ Khách yêu cầu hủy " + o.order_code);
+          sendDeviceNotification("⚠️ Yêu cầu hủy đơn", `Đơn ${o.order_code} khách yêu cầu hủy.`, "cancel-poll-" + o.id);
+        }
+      });
+      allAdminOrders = latest;
+      document.getElementById("aCount").textContent = latest.length;
+      document.getElementById("aPaid").textContent = money(latest.reduce((a,o)=>a+paidOf(o),0));
+      document.getElementById("aRemain").textContent = money(latest.reduce((a,o)=>a+remainOf(o),0));
+      updateAdminTabCounts(latest);
+      renderAdminOrdersGrouped();
+    }, 5000);
+  }
 }
 
 /* ========== AUTH ========== */
@@ -972,7 +994,7 @@ async function openOrderDetail(orderId, role) {
     // Admin actions
     html += `
       <select id="detailStatusSelect" style="padding:10px 12px;border-radius:10px;border:1px solid #ddd">
-        ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Đã hủy","Đã thanh toán"].map(s =>
+        ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Khách yêu cầu hủy","Đã hủy","Đã thanh toán"].map(s =>
           `<option value="${s}" ${order.status === s ? "selected" : ""}>${s}</option>`
         ).join("")}
       </select>
@@ -1034,7 +1056,7 @@ async function confirmCancelOrder() {
     const noteExtra = reason ? `\n[Hủy bởi khách] ${reason}` : "\n[Hủy bởi khách]";
 
     const { error } = await db.from("orders").update({
-      status: "Đã hủy",
+      status: "Khách yêu cầu hủy",
       payment_status: order.payment_status === "paid" ? order.payment_status : "cancelled",
       note: (order.note || "") + noteExtra,
       updated_at: new Date().toISOString()
@@ -1057,8 +1079,8 @@ async function confirmCancelOrder() {
       }
     }
 
-    showToast("✅ Đã hủy đơn " + order.order_code);
-    sendDeviceNotification("✅ Đã hủy đơn", `Đơn ${order.order_code} đã được hủy.`, "cancel-ok");
+    showToast("📩 Đã gửi yêu cầu hủy đơn " + order.order_code);
+    sendDeviceNotification("📩 Đã gửi yêu cầu hủy", `Đơn ${order.order_code} đang chờ Admin xử lý.`, "cancel-request");
     closeCancelModal();
     await loadCustomerOrders();
     await loadProducts();
@@ -1155,7 +1177,7 @@ function renderAdminOrdersGrouped() {
                   <td>${esc(ps)}</td>
                   <td onclick="event.stopPropagation()">
                     <select onchange="changeStatus('${o.id}', this.value)">
-                      ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Đã hủy","Đã thanh toán"].map(s =>
+                      ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Khách yêu cầu hủy","Đã hủy","Đã thanh toán"].map(s =>
                         `<option ${o.status === s ? "selected" : ""}>${s}</option>`
                       ).join("")}
                     </select>
@@ -1231,35 +1253,6 @@ async function saveTracking() {
   showToast("✅ Đã lưu mã vận đơn");
   closeTrackingModal();
   loadAdmin();
-}
-
-
-async function requestCancelOrder(orderId){
-  if(!confirm("Bạn có chắc muốn yêu cầu hủy đơn này?")) return;
-  const {data:{user}}=await db.auth.getUser();
-  if(!user) return alert("Phiên đăng nhập đã hết.");
-  const {data:order,error:findError}=await db.from("orders").select("id,user_id,status").eq("id",orderId).single();
-  if(findError||!order) return alert("❌ Không tìm thấy đơn hàng.");
-  if(order.user_id!==user.id) return alert("❌ Bạn không có quyền hủy đơn này.");
-  if(!["Chờ xác nhận","Đã cọc"].includes(order.status||"Chờ xác nhận")) return alert("❌ Đơn này không còn ở trạng thái có thể yêu cầu hủy.");
-  const {error}=await db.from("orders").update({status:"Khách yêu cầu hủy",updated_at:new Date().toISOString()}).eq("id",orderId).eq("user_id",user.id);
-  if(error){console.error(error);return alert("❌ Không thể gửi yêu cầu hủy: "+error.message);}
-  alert("✅ Đã gửi yêu cầu hủy. Admin sẽ kiểm tra và xử lý.");
-  await loadCustomerOrders();
-}
-
-async function approveCancel(orderId){
-  if(!confirm("Duyệt hủy đơn này?")) return;
-  const {error}=await db.from("orders").update({status:"Đã hủy",updated_at:new Date().toISOString()}).eq("id",orderId).eq("status","Khách yêu cầu hủy");
-  if(error)return alert("❌ Không thể duyệt hủy: "+error.message);
-  await loadAdmin();
-}
-
-async function rejectCancel(orderId){
-  if(!confirm("Từ chối yêu cầu hủy và đưa đơn về Chờ xác nhận?")) return;
-  const {error}=await db.from("orders").update({status:"Chờ xác nhận",updated_at:new Date().toISOString()}).eq("id",orderId).eq("status","Khách yêu cầu hủy");
-  if(error)return alert("❌ Không thể từ chối yêu cầu: "+error.message);
-  await loadAdmin();
 }
 
 function adminTab(t) {
