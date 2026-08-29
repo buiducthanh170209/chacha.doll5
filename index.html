@@ -65,6 +65,19 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
   .status-tabs{gap:8px}
   .status-tabs button{padding:9px 12px;font-size:12px}
 }
+
+/* Mobile UI polish */
+@media(max-width:800px){
+  header{padding:10px 12px}.brand{font-size:16px}.brand b{width:36px;height:36px}
+  .container{padding:15px 12px}.card{padding:15px;border-radius:18px}.welcome h2{font-size:23px}
+  .cards{gap:9px}.stat{font-size:23px}
+  .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.product img{height:145px}.pbody{padding:11px}.pbody h3{font-size:15px}.price{font-size:17px}
+  .sizebtn{min-height:40px;padding:8px 10px}.order{padding:13px;border-radius:16px}.oinfo{grid-template-columns:1fr 1fr;gap:7px}.info{padding:9px;font-size:13px;overflow-wrap:anywhere}
+  .order-actions{display:grid!important;grid-template-columns:1fr;gap:8px}.order-actions button{width:100%!important}
+  .adminnav,.status-tabs{overflow-x:auto;flex-wrap:nowrap!important;padding-bottom:4px}.adminnav button,.status-tabs button{flex:0 0 auto;white-space:nowrap}
+  .table th,.table td{padding:8px;font-size:12px}
+}
+@media(max-width:430px){.products{grid-template-columns:1fr}.product img{height:190px}}
 </style>
 </head>
 <body>
@@ -461,6 +474,25 @@ function sendDeviceNotification(title, body, tag) {
   }
 }
 
+function showAdminCancelAlert(order) {
+  const box=document.getElementById("adminCancelAlert"), text=document.getElementById("adminCancelAlertText");
+  if(!box||!text)return;
+  box.classList.remove("hidden");
+  text.textContent=`Đơn ${order.order_code||"—"} • ${order.customer_name||"Khách hàng"} vừa hủy đơn.`;
+}
+async function scanCustomerCancellations(orders){
+  const list=(orders||[]).filter(o=>o.status==="Đã hủy"&&String(o.note||"").includes("[Đã hủy bởi khách]"));
+  if(!list.length)return;
+  const seen=JSON.parse(localStorage.getItem("chacha_cancel_seen")||"[]");
+  const fresh=list.filter(o=>!seen.includes(String(o.id)));
+  if(fresh.length){
+    showAdminCancelAlert(fresh[0]);
+    showToast(`⚠️ Có ${fresh.length} đơn khách vừa hủy`);
+    sendDeviceNotification("⚠️ Khách hủy đơn",`${fresh.length} đơn đã được khách hủy.` ,"cancel-batch");
+    localStorage.setItem("chacha_cancel_seen",JSON.stringify([...seen,...fresh.map(o=>String(o.id))].slice(-100)));
+  }
+}
+
 function setupRealtime(role) {
   if (realtimeChannel) {
     db.removeChannel(realtimeChannel);
@@ -488,9 +520,10 @@ function setupRealtime(role) {
           showToast("🟡 Đơn " + o.order_code + " nhận một phần tiền.");
           sendDeviceNotification("🟡 Nhận tiền một phần", `Đơn ${o.order_code} đã nhận một phần thanh toán.`, "pay-partial-" + o.id);
         }
-        if ((o.status === "Đã hủy" || o.status === "Khách yêu cầu hủy") && o.status !== old.status) {
-          showToast("⚠️ Yêu cầu hủy đơn: " + o.order_code);
-          sendDeviceNotification("⚠️ Yêu cầu hủy đơn", `Khách hàng yêu cầu hủy ${o.order_code}.`, "cancel-" + o.id);
+        if (o.status === "Đã hủy" && String(o.note || "").includes("[Đã hủy bởi khách]") && o.status !== old.status) {
+          showAdminCancelAlert(o);
+          showToast("⚠️ Khách vừa hủy: " + o.order_code);
+          sendDeviceNotification("⚠️ Khách hủy đơn", `Đơn ${o.order_code} đã được khách hủy.`, "cancel-" + o.id);
         }
         loadAdmin();
       } else if (role === "customer" && currentUser && o.user_id === currentUser.id) {
@@ -519,9 +552,10 @@ function setupRealtime(role) {
       const oldMap = new Map((allAdminOrders || []).map(x => [String(x.id), x.status]));
       latest.forEach(o => {
         const oldStatus = oldMap.get(String(o.id));
-        if (o.status === "Khách yêu cầu hủy" && oldStatus !== "Khách yêu cầu hủy") {
-          showToast("⚠️ Khách yêu cầu hủy " + o.order_code);
-          sendDeviceNotification("⚠️ Yêu cầu hủy đơn", `Đơn ${o.order_code} khách yêu cầu hủy.`, "cancel-poll-" + o.id);
+        if (o.status === "Đã hủy" && String(o.note || "").includes("[Đã hủy bởi khách]") && oldStatus !== "Đã hủy") {
+          showAdminCancelAlert(o);
+          showToast("⚠️ Khách vừa hủy " + o.order_code);
+          sendDeviceNotification("⚠️ Khách hủy đơn", `Đơn ${o.order_code} đã được khách hủy.`, "cancel-poll-" + o.id);
         }
       });
       allAdminOrders = latest;
@@ -1261,6 +1295,7 @@ function updateAdminCancelAlert(orders) {
 
 async function loadAdmin() {
   allAdminOrders = await getAllOrders();
+  await scanCustomerCancellations(allAdminOrders);
   // Đơn đã hủy vẫn giữ trong database và mục "Đã hủy", nhưng không tính
   // vào Tổng đơn / Đã thanh toán / Còn phải thu.
   const activeAdminOrders = allAdminOrders.filter(o => getStatusGroup(o.status) !== "cancelled");
