@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -8,17 +9,19 @@
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#fff1f8,#f2efff 55%,#eef6ff);color:#1f2937}
 button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
-.auth{min-height:100vh;display:grid;place-items:center;padding:20px}.authbox,.card{background:#fff;border:1px solid #f1e8f0;border-radius:24px;box-shadow:0 15px 50px #312e8112}.authbox{width:min(430px,100%);padding:32px}.logo{text-align:center;margin-bottom:22px}.logoicon{width:72px;height:72px;margin:auto;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,#ec4899,#8b5cf6);font-size:32px}.logo h1{margin:12px 0 4px}.muted{color:#64748b}.tabs{display:flex;background:#f8fafc;padding:5px;border-radius:13px;margin:18px 0}.tabs button{width:50%;border:0;padding:11px;border-radius:10px;background:transparent}.tabs .active{background:#fff;color:#db2777;font-weight:700;box-shadow:0 2px 10px #0000000a}
+.auth{min-height:100vh;display:grid;place-items:center;padding:20px}.authbox,.card{background:#fff;border:1px solid #f1e8f0;border-radius:24px;box-shadow:0 15px 50px #312e8112}.authbox{width:min(430px,100%);padding:32px}.logo{text-align:center;margin-bottom:22px}.logoicon{width:72px;height:72px;margin:auto;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,#ec4899,#8b5cf6);font-size:32px;overflow:hidden}.logoicon img{width:100%;height:100%;object-fit:cover}.logo h1{margin:12px 0 4px}.muted{color:#64748b}.tabs{display:flex;background:#f8fafc;padding:5px;border-radius:13px;margin:18px 0}.tabs button{width:50%;border:0;padding:11px;border-radius:10px;background:transparent}.tabs .active{background:#fff;color:#db2777;font-weight:700;box-shadow:0 2px 10px #0000000a}
 .field{margin:0 0 14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #dbe2ea;border-radius:12px;padding:12px;outline:none;background:#fff}input:focus,select:focus,textarea:focus{border-color:#ec4899}.primary{border:0;color:#fff;background:linear-gradient(135deg,#ec4899,#8b5cf6);padding:14px 18px;border-radius:12px;font-weight:800;min-height:46px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.wide{width:100%}.msg{padding:11px;border-radius:10px;margin-top:12px;font-size:14px}
-header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blur(12px);border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:13px 22px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px}.brand b{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff}.user{display:flex;gap:10px;align-items:center}.logout{background:#fff;border:1px solid #ddd;padding:9px 13px;border-radius:10px}
+header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blur(12px);border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:13px 22px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px}.brand b{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;overflow:hidden}.brand b img{width:100%;height:100%;object-fit:cover}.user{display:flex;gap:10px;align-items:center}.logout,.profile-btn{background:#fff;border:1px solid #ddd;padding:9px 13px;border-radius:10px}
 .container{width:min(1150px,100%);margin:auto;padding:28px 18px}.welcome{margin-bottom:22px}.welcome h2{margin:0 0 5px;font-size:28px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}.card{padding:20px}.stat-title{font-size:13px;color:#64748b}.stat{font-size:27px;font-weight:800;margin-top:7px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.full{grid-column:1/-1}.money{background:#fff1f8;border:1px solid #fbcfe8;border-radius:15px;padding:15px}.moneyrow{display:flex;justify-content:space-between;padding:5px 0}.remaining{color:#db2777;font-size:20px;font-weight:800}
 .products{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.product{overflow:hidden;background:#fff;border:1px solid #eee;border-radius:20px;box-shadow:0 10px 30px #00000009}.product img{width:100%;height:190px;object-fit:cover;background:#f8fafc}.pbody{padding:15px}.price{font-weight:900;color:#db2777;font-size:20px}.code{font-size:12px;color:#64748b}.sizes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.sizebtn{border:1px solid #ddd;background:#fff;padding:11px 14px;border-radius:9px;min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.sizebtn.selected{background:#fce7f3;border-color:#ec4899;color:#be185d;font-weight:700}
-.order{background:#fff;border:1px solid #eee;border-radius:18px;padding:17px;margin-top:12px}.ordertop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.status{background:#fef3c7;color:#92400e;border-radius:99px;padding:5px 9px;font-size:12px;font-weight:700}.status-paid{background:#d1fae5;color:#065f46}.status-partial{background:#fef3c7;color:#92400e}.status-pending{background:#e0e7ff;color:#3730a3}.oinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.info{background:#f8fafc;border-radius:10px;padding:10px}.info small{display:block;color:#64748b;margin-bottom:3px}.adminnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.adminnav button{border:1px solid #ddd;background:#fff;padding:9px 13px;border-radius:10px}.adminnav .on{background:#fce7f3;border-color:#f9a8d4;color:#be185d;font-weight:700}
+.order{background:#fff;border:1px solid #eee;border-radius:18px;padding:17px;margin-top:12px}.ordertop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.status{background:#fef3c7;color:#92400e;border-radius:99px;padding:5px 9px;font-size:12px;font-weight:700}.status-paid{background:#d1fae5;color:#065f46}.status-partial{background:#fef3c7;color:#92400e}.status-pending{background:#e0e7ff;color:#3730a3}.status-cancelled{background:#fee2e2;color:#b91c1c}.oinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.info{background:#f8fafc;border-radius:10px;padding:10px}.info small{display:block;color:#64748b;margin-bottom:3px}.adminnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.adminnav button{border:1px solid #ddd;background:#fff;padding:9px 13px;border-radius:10px}.adminnav .on{background:#fce7f3;border-color:#f9a8d4;color:#be185d;font-weight:700}
 .tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #eee;text-align:left;white-space:nowrap;font-size:13px}.table th{background:#f8fafc}.thumb{width:48px;height:48px;object-fit:cover;border-radius:9px}.danger{border:0;background:#fee2e2;color:#b91c1c;padding:8px 10px;border-radius:9px}.secondary{border:1px solid #ddd;background:#fff;padding:9px 12px;border-radius:9px}.empty{text-align:center;padding:30px;color:#64748b}
 .paybox{background:linear-gradient(135deg,#fff1f8,#f5f3ff);border:1px solid #fbcfe8;border-radius:18px;padding:20px;margin-top:16px}.paybox h3{margin:0 0 12px}.qrwrap{text-align:center;margin:16px 0}.qrwrap img{max-width:260px;width:100%;border-radius:12px;border:1px solid #eee;background:#fff}.payinfo{display:grid;gap:8px;font-size:14px}.payinfo b{color:#be185d}.paystatus{display:inline-block;padding:6px 12px;border-radius:99px;font-weight:700;font-size:13px;margin-top:8px}
 .loading{opacity:.6;pointer-events:none}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2937;color:#fff;padding:12px 20px;border-radius:12px;z-index:100;font-size:14px;box-shadow:0 8px 30px #0003}
 .modal-bg{position:fixed;inset:0;background:#0006;display:grid;place-items:center;z-index:50;padding:16px}.modal{background:#fff;border-radius:18px;padding:22px;width:min(420px,100%);box-shadow:0 20px 50px #0003}
+.avatar-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #fce7f3;display:block;margin:8px auto}
+.order-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 @media(max-width:800px){button{min-height:44px}.cards,.products{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.oinfo{grid-template-columns:1fr 1fr}.user-name{display:none}}
 </style>
 </head>
@@ -26,7 +29,11 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 
 <div id="authPage" class="auth">
   <div class="authbox">
-    <div class="logo"><div class="logoicon">🎀</div><h1>chacha.doll5</h1><div class="muted">Hệ thống đặt hàng</div></div>
+    <div class="logo">
+      <div class="logoicon" id="authLogo">🎀</div>
+      <h1>chacha.doll5</h1>
+      <div class="muted">Hệ thống đặt hàng</div>
+    </div>
     <div class="tabs"><button id="tabLogin" class="active" onclick="showAuth('login')">Đăng nhập</button><button id="tabReg" onclick="showAuth('reg')">Tạo tài khoản</button></div>
     <div id="loginBox">
       <div class="field"><label>Email</label><input id="loginEmail" type="email" autocomplete="email"></div>
@@ -35,7 +42,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
     </div>
     <div id="regBox" class="hidden">
       <div class="field"><label>Họ tên</label><input id="regName"></div>
-      <div class="field"><label>Số điện thoại</label><input id="regPhone"></div>
+      <div class="field"><label>Số điện thoại</label><input id="regPhone" type="tel" placeholder="09xxxxxxxx"></div>
       <div class="field"><label>Email</label><input id="regEmail" type="email"></div>
       <div class="field"><label>Mật khẩu</label><input id="regPassword" type="password" minlength="6"></div>
       <button class="primary wide" id="btnReg" onclick="register()">TẠO TÀI KHOẢN</button>
@@ -46,13 +53,17 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 
 <div id="app" class="hidden">
 <header>
-  <div class="brand"><b>🎀</b>chacha.doll5</div>
-  <div class="user"><span id="userName" class="user-name"></span><button class="logout" onclick="logout()">Đăng xuất</button></div>
+  <div class="brand"><b id="headerLogo">🎀</b>chacha.doll5</div>
+  <div class="user">
+    <span id="userName" class="user-name"></span>
+    <button class="profile-btn" onclick="openProfileModal()">👤 Hồ sơ</button>
+    <button class="logout" onclick="logout()">Đăng xuất</button>
+  </div>
 </header>
 
 <section id="customerPage" class="hidden">
 <div class="container">
-<div class="welcome"><h2>Xin chào 👋</h2><div class="muted">Đặt hàng và theo dõi đơn của bạn</div></div>
+<div class="welcome"><h2>Xin chào 👋 <span id="welcomeName"></span></h2><div class="muted">Đặt hàng và theo dõi đơn của bạn</div></div>
 <div class="cards">
   <div class="card"><div class="stat-title">Đơn hàng</div><div id="cCount" class="stat">0</div></div>
   <div class="card"><div class="stat-title">Đã thanh toán</div><div id="cPaid" class="stat">0đ</div></div>
@@ -69,7 +80,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
   <h2>🛒 Xác nhận đơn</h2>
   <div class="grid">
     <div class="field"><label>Họ tên</label><input id="customerName"></div>
-    <div class="field"><label>Số điện thoại</label><input id="customerPhone"></div>
+    <div class="field"><label>Số điện thoại *</label><input id="customerPhone" type="tel" placeholder="09xxxxxxxx"></div>
     <div class="field full"><label>Địa chỉ nhận hàng</label><textarea id="address" rows="2"></textarea></div>
     <div class="field"><label>Sản phẩm</label><input id="selectedProduct" readonly></div>
     <div class="field"><label>Mã sản phẩm</label><input id="selectedCode" readonly></div>
@@ -125,6 +136,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
   <div class="adminnav">
     <button id="ordersTab" class="on" onclick="adminTab('orders')">📋 Đơn hàng</button>
     <button id="productsTab" onclick="adminTab('products')">🛍️ Sản phẩm</button>
+    <button id="settingsTab" onclick="adminTab('settings')">⚙️ Cài đặt web</button>
   </div>
 
   <div id="adminOrdersPanel" class="card">
@@ -133,7 +145,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
       <table class="table">
         <thead>
           <tr>
-            <th>Mã</th><th>Khách</th><th>Sản phẩm</th><th>Size</th><th>SL</th>
+            <th>Mã</th><th>Khách</th><th>SĐT</th><th>Địa chỉ</th><th>Sản phẩm</th><th>Size</th><th>SL</th>
             <th>Tổng</th><th>Đã trả</th><th>Còn</th><th>TT thanh toán</th><th>Trạng thái</th>
             <th>Vận chuyển</th>
           </tr>
@@ -174,6 +186,33 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
       </div>
     </div>
   </div>
+
+  <div id="adminSettingsPanel" class="hidden">
+    <div class="card">
+      <h2>⚙️ Cài đặt giao diện web</h2>
+      <p class="muted">Đổi logo / ảnh đại diện hiển thị trên web.</p>
+      <div class="grid">
+        <div class="field full">
+          <label>Logo hiện tại</label>
+          <div id="currentLogoPreview" style="text-align:center;margin:12px 0">
+            <div class="logoicon" style="width:90px;height:90px;margin:auto" id="settingsLogoBox">🎀</div>
+          </div>
+        </div>
+        <div class="field full">
+          <label>Chọn ảnh logo mới</label>
+          <input id="logoFile" type="file" accept="image/*" onchange="previewLogo()">
+          <img id="logoPreview" class="thumb hidden" style="width:100px;height:100px;margin-top:8px;border-radius:16px" alt="">
+        </div>
+        <div class="field full">
+          <label>Tên shop (hiển thị)</label>
+          <input id="shopName" value="chacha.doll5">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="primary" onclick="saveLogoSettings()">💾 Lưu logo & tên shop</button>
+      </div>
+    </div>
+  </div>
 </div>
 </section>
 </div>
@@ -200,6 +239,41 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
   </div>
 </div>
 
+<!-- Modal xác nhận hủy đơn -->
+<div id="cancelModal" class="modal-bg hidden">
+  <div class="modal">
+    <h3 style="margin:0 0 14px">⚠️ Xác nhận hủy đơn</h3>
+    <p>Bạn có <b>chắc chắn</b> muốn hủy đơn <b id="cancelOrderCode">—</b>?</p>
+    <p class="muted" style="font-size:13px">Hành động này không thể hoàn tác. Tồn kho sẽ được hoàn lại (nếu có).</p>
+    <div class="field"><label>Lý do hủy (tuỳ chọn)</label><textarea id="cancelReason" rows="2" placeholder="Ví dụ: Đặt nhầm size..."></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="danger wide" id="btnConfirmCancel" onclick="confirmCancelOrder()">Đồng ý hủy đơn</button>
+      <button class="secondary" onclick="closeCancelModal()">Không hủy</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal hồ sơ / đổi ảnh + SĐT -->
+<div id="profileModal" class="modal-bg hidden">
+  <div class="modal">
+    <h3 style="margin:0 0 14px">👤 Hồ sơ của tôi</h3>
+    <div style="text-align:center">
+      <img id="profileAvatarPreview" class="avatar-preview" src="https://placehold.co/80x80?text=Avatar" alt="Avatar">
+    </div>
+    <div class="field">
+      <label>Ảnh đại diện</label>
+      <input id="profileAvatarFile" type="file" accept="image/*" onchange="previewProfileAvatar()">
+    </div>
+    <div class="field"><label>Họ tên</label><input id="profileName"></div>
+    <div class="field"><label>Số điện thoại</label><input id="profilePhone" type="tel" placeholder="09xxxxxxxx"></div>
+    <div class="field"><label>Email</label><input id="profileEmail" readonly style="background:#f8fafc"></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="primary wide" id="btnSaveProfile" onclick="saveProfile()">💾 Lưu hồ sơ</button>
+      <button class="secondary" onclick="closeProfileModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = "https://lmqvzejtjafvlsawunfx.supabase.co";
 const SUPABASE_KEY = "sb_publishable_1_iez1VtYJbF_gLkqV1ZjA_ngqVnygn";
@@ -211,6 +285,18 @@ const ACCOUNT_NAME = "CHACHA DOLL";
 
 const money = n => Number(n || 0).toLocaleString("vi-VN") + "đ";
 const esc = v => String(v ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+
+let currentUser = null;
+let currentProfile = null;
+let products = [];
+let selected = null;
+let editingId = null;
+let currentPayOrder = null;
+let trackingOrderId = null;
+let cancelOrderId = null;
+let cancelOrderData = null;
+let realtimeChannel = null;
+let notifPermission = false;
 
 function showToast(text) {
   const t = document.createElement("div");
@@ -236,6 +322,86 @@ function showAuth(which) {
   document.getElementById("authMsg").innerHTML = "";
 }
 
+/* ========== NOTIFICATIONS ========== */
+async function requestNotificationPermission() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "granted") {
+    notifPermission = true;
+    return;
+  }
+  if (Notification.permission !== "denied") {
+    const p = await Notification.requestPermission();
+    notifPermission = p === "granted";
+  }
+}
+
+function sendDeviceNotification(title, body, tag) {
+  if (!notifPermission || !("Notification" in window)) return;
+  try {
+    const n = new Notification(title, {
+      body: body || "",
+      icon: "/favicon.ico",
+      tag: tag || "chacha-" + Date.now(),
+      requireInteraction: false
+    });
+    setTimeout(() => n.close(), 8000);
+  } catch (e) {
+    console.warn("Notification error", e);
+  }
+}
+
+function setupRealtime(role) {
+  if (realtimeChannel) {
+    db.removeChannel(realtimeChannel);
+    realtimeChannel = null;
+  }
+
+  realtimeChannel = db.channel("orders-realtime")
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, payload => {
+      const o = payload.new;
+      if (role === "admin") {
+        showToast("🛒 Đơn hàng mới: " + (o.order_code || ""));
+        sendDeviceNotification("🛒 Đơn hàng mới!", `Mã ${o.order_code} • ${o.customer_name} • ${money(o.total_amount)}`, "new-order");
+        loadAdmin();
+      }
+    })
+    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "orders" }, payload => {
+      const o = payload.new;
+      const old = payload.old || {};
+
+      if (role === "admin") {
+        if (o.payment_status === "paid" && old.payment_status !== "paid") {
+          showToast("💰 Đơn " + o.order_code + " đã thanh toán đủ!");
+          sendDeviceNotification("💰 Thanh toán thành công", `Đơn ${o.order_code} đã được thanh toán đầy đủ.`, "pay-" + o.id);
+        } else if (o.payment_status === "partial" && old.payment_status !== "partial") {
+          showToast("🟡 Đơn " + o.order_code + " nhận một phần tiền.");
+          sendDeviceNotification("🟡 Nhận tiền một phần", `Đơn ${o.order_code} đã nhận một phần thanh toán.`, "pay-partial-" + o.id);
+        }
+        if (o.status === "Đã hủy" && old.status !== "Đã hủy") {
+          showToast("⚠️ Khách đã hủy đơn " + o.order_code);
+          sendDeviceNotification("⚠️ Đơn bị hủy", `Khách hàng đã hủy đơn ${o.order_code}.`, "cancel-" + o.id);
+        }
+        loadAdmin();
+      } else if (role === "customer" && currentUser && o.user_id === currentUser.id) {
+        if (o.payment_status === "paid" && old.payment_status !== "paid") {
+          showToast("✅ Đơn " + o.order_code + " đã được xác nhận thanh toán!");
+          sendDeviceNotification("✅ Thanh toán thành công", `Đơn ${o.order_code} đã được thanh toán đầy đủ.`, "pay-ok-" + o.id);
+        }
+        if (o.status !== old.status) {
+          showToast("📦 Đơn " + o.order_code + " → " + o.status);
+          sendDeviceNotification("📦 Cập nhật đơn hàng", `Đơn ${o.order_code}: ${o.status}`, "status-" + o.id);
+        }
+        if (o.tracking_code && !old.tracking_code) {
+          showToast("🚚 Đã có mã vận đơn: " + o.tracking_code);
+          sendDeviceNotification("🚚 Có mã vận đơn", `Đơn ${o.order_code}: ${o.tracking_code}`, "ship-" + o.id);
+        }
+        loadCustomerOrders();
+      }
+    })
+    .subscribe();
+}
+
+/* ========== AUTH ========== */
 async function register() {
   const name = document.getElementById("regName").value.trim();
   const phone = document.getElementById("regPhone").value.trim();
@@ -247,6 +413,16 @@ async function register() {
   try {
     const { data, error } = await db.auth.signUp({ email, password, options: { data: { full_name: name, phone } } });
     if (error) return msg("❌ " + error.message, true);
+    // Tạo / cập nhật profile
+    if (data.user) {
+      await db.from("profiles").upsert({
+        id: data.user.id,
+        full_name: name,
+        phone: phone,
+        role: "customer",
+        updated_at: new Date().toISOString()
+      });
+    }
     msg(data.session ? "✅ Tạo tài khoản thành công." : "✅ Tạo tài khoản thành công. Kiểm tra email xác nhận nếu đang bật.");
   } finally {
     btn.disabled = false;
@@ -269,6 +445,10 @@ async function login() {
 }
 
 async function logout() {
+  if (realtimeChannel) {
+    db.removeChannel(realtimeChannel);
+    realtimeChannel = null;
+  }
   await db.auth.signOut();
   location.reload();
 }
@@ -276,35 +456,67 @@ async function logout() {
 async function loadApp() {
   const { data: { user } } = await db.auth.getUser();
   if (!user) return;
+  currentUser = user;
   document.getElementById("authPage").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
+
   const { data: p, error } = await db.from("profiles").select("*").eq("id", user.id).single();
   if (error) {
     console.error(error);
-    alert("Không tìm thấy profile. Hãy kiểm tra bảng profiles.");
-    return;
+    // Tự tạo profile nếu thiếu
+    await db.from("profiles").upsert({
+      id: user.id,
+      full_name: user.user_metadata?.full_name || "",
+      phone: user.user_metadata?.phone || "",
+      role: "customer"
+    });
+    const { data: p2 } = await db.from("profiles").select("*").eq("id", user.id).single();
+    currentProfile = p2;
+  } else {
+    currentProfile = p;
   }
-  document.getElementById("userName").textContent = p.full_name || user.email;
-  if (p.role === "admin") {
+
+  document.getElementById("userName").textContent = currentProfile?.full_name || user.email;
+  document.getElementById("welcomeName").textContent = currentProfile?.full_name || "";
+
+  // Áp dụng logo nếu có
+  applyLogo(currentProfile?.avatar_url);
+
+  await requestNotificationPermission();
+
+  if (currentProfile?.role === "admin") {
     document.getElementById("customerPage").classList.add("hidden");
     document.getElementById("adminPage").classList.remove("hidden");
     await loadAdmin();
+    setupRealtime("admin");
   } else {
     document.getElementById("adminPage").classList.add("hidden");
     document.getElementById("customerPage").classList.remove("hidden");
-    document.getElementById("customerName").value = p.full_name || "";
-    document.getElementById("customerPhone").value = p.phone || "";
+    document.getElementById("customerName").value = currentProfile?.full_name || "";
+    document.getElementById("customerPhone").value = currentProfile?.phone || "";
     await loadProducts();
     await loadCustomerOrders();
+    setupRealtime("customer");
   }
 }
 
-let products = [];
-let selected = null;
-let editingId = null;
-let currentPayOrder = null;
-let trackingOrderId = null;
+function applyLogo(url) {
+  const boxes = [
+    document.getElementById("headerLogo"),
+    document.getElementById("authLogo"),
+    document.getElementById("settingsLogoBox")
+  ];
+  boxes.forEach(el => {
+    if (!el) return;
+    if (url) {
+      el.innerHTML = `<img src="${esc(url)}" alt="logo">`;
+    } else {
+      el.innerHTML = "🎀";
+    }
+  });
+}
 
+/* ========== PRODUCTS (customer) ========== */
 async function loadProducts() {
   const { data, error } = await db.from("products").select("*").eq("active", true).order("created_at", { ascending: false });
   const list = document.getElementById("productList");
@@ -386,6 +598,7 @@ function buildVietQR(amount, content) {
 function paymentStatusLabel(ps) {
   if (ps === "paid") return { text: "✅ Đã thanh toán", cls: "status-paid" };
   if (ps === "partial") return { text: "🟡 Đã nhận một phần", cls: "status-partial" };
+  if (ps === "cancelled") return { text: "❌ Đã hủy", cls: "status-cancelled" };
   return { text: "⏳ Chờ thanh toán", cls: "status-pending" };
 }
 
@@ -422,7 +635,7 @@ async function createOrder() {
   const phone = document.getElementById("customerPhone").value.trim();
   const address = document.getElementById("address").value.trim();
   const q = Number(document.getElementById("selectedQty").value) || 0;
-  if (!name || !phone || !address || q < 1) return alert("Vui lòng nhập đủ thông tin.");
+  if (!name || !phone || !address || q < 1) return alert("Vui lòng nhập đủ thông tin (họ tên, SĐT, địa chỉ).");
   if (Number(selected.stock || 0) < q) return alert("Sản phẩm không đủ tồn kho.");
 
   const total = q * Number(selected.price || 0);
@@ -438,6 +651,7 @@ async function createOrder() {
       phone,
       address,
       product_type: selected.name || "",
+      product_id: selected.id,
       size: document.getElementById("selectedSize").value,
       quantity: q,
       price: selected.price,
@@ -458,6 +672,7 @@ async function createOrder() {
     if (stockErr) console.error("Stock update error:", stockErr);
 
     showToast("✅ Đặt hàng thành công! Mã đơn: " + code);
+    sendDeviceNotification("✅ Đặt hàng thành công", `Mã đơn ${code} • ${money(total)}`, "order-created");
     showPaymentUI(inserted);
     await loadCustomerOrders();
     await loadProducts();
@@ -485,6 +700,7 @@ async function checkPayment() {
   }
 }
 
+/* ========== ORDERS ========== */
 async function getOrdersForCustomer() {
   const { data: { user } } = await db.auth.getUser();
   if (!user) return [];
@@ -502,6 +718,13 @@ async function getAllOrders() {
 function paidOf(o) { return Number(o.deposit_amount ?? o.paid_amount ?? 0); }
 function remainOf(o) { return Math.max(Number(o.total_amount || 0) - paidOf(o), 0); }
 
+function canCancel(o) {
+  if (!o) return false;
+  if (o.status === "Đã hủy" || o.status === "Đã giao" || o.status === "Đang giao") return false;
+  // Chỉ cho hủy khi còn ở giai đoạn sớm
+  return ["Chờ xác nhận", "Đã cọc", "Đang xử lý"].includes(o.status) || !o.status;
+}
+
 async function loadCustomerOrders() {
   const orders = await getOrdersForCustomer();
   document.getElementById("cCount").textContent = orders.length;
@@ -510,6 +733,7 @@ async function loadCustomerOrders() {
   const box = document.getElementById("customerOrders");
   box.innerHTML = orders.length ? orders.map(o => {
     const ps = paymentStatusLabel(o.payment_status || "pending");
+    const cancelled = o.status === "Đã hủy";
     return `<div class="order">
       <div class="ordertop">
         <div>
@@ -517,7 +741,7 @@ async function loadCustomerOrders() {
           <div class="muted">${new Date(o.created_at).toLocaleString("vi-VN")}</div>
         </div>
         <div style="text-align:right">
-          <span class="status">${esc(o.status || "Chờ xác nhận")}</span>
+          <span class="status ${cancelled ? "status-cancelled" : ""}">${esc(o.status || "Chờ xác nhận")}</span>
           <div style="margin-top:6px"><span class="paystatus ${ps.cls}">${ps.text}</span></div>
         </div>
       </div>
@@ -528,6 +752,7 @@ async function loadCustomerOrders() {
         <div class="info"><small>Tổng tiền</small>${money(o.total_amount)}</div>
         <div class="info"><small>Đã thanh toán</small>${money(paidOf(o))}</div>
         <div class="info"><small>Còn lại</small><b class="remaining">${money(remainOf(o))}</b></div>
+        <div class="info"><small>SĐT</small>${esc(o.phone || "-")}</div>
         <div class="info"><small>Vận chuyển</small>${esc(o.shipping_company || "Chưa tạo vận đơn")}</div>
         <div class="info"><small>Mã vận đơn</small>
           ${o.tracking_code
@@ -535,13 +760,86 @@ async function loadCustomerOrders() {
             : "-"}
         </div>
       </div>
-      ${remainOf(o) > 0 ? `<div style="margin-top:12px"><button class="primary" onclick='openPayForOrder(${JSON.stringify(o).replace(/'/g, "&#39;")})'>💳 Thanh toán / Xem QR</button></div>` : ""}
+      <div class="order-actions">
+        ${!cancelled && remainOf(o) > 0 ? `<button class="primary" onclick='openPayForOrder(${JSON.stringify(o).replace(/'/g, "&#39;")})'>💳 Thanh toán / Xem QR</button>` : ""}
+        ${canCancel(o) ? `<button class="danger" onclick="openCancelModal('${o.id}', '${esc(o.order_code)}')">❌ Hủy đơn</button>` : ""}
+      </div>
     </div>`;
   }).join("") : '<div class="empty">Chưa có đơn hàng.</div>';
 }
 
 function openPayForOrder(o) { showPaymentUI(o); }
 
+/* ========== CANCEL ORDER ========== */
+function openCancelModal(orderId, orderCode) {
+  cancelOrderId = orderId;
+  document.getElementById("cancelOrderCode").textContent = orderCode || "—";
+  document.getElementById("cancelReason").value = "";
+  document.getElementById("cancelModal").classList.remove("hidden");
+}
+
+function closeCancelModal() {
+  cancelOrderId = null;
+  cancelOrderData = null;
+  document.getElementById("cancelModal").classList.add("hidden");
+}
+
+async function confirmCancelOrder() {
+  if (!cancelOrderId) return;
+  const btn = document.getElementById("btnConfirmCancel");
+  btn.disabled = true;
+  try {
+    // Lấy đơn để hoàn stock
+    const { data: order, error: fetchErr } = await db.from("orders").select("*").eq("id", cancelOrderId).single();
+    if (fetchErr || !order) {
+      alert("❌ Không tìm thấy đơn hàng.");
+      return;
+    }
+    if (!canCancel(order)) {
+      alert("❌ Đơn này không thể hủy (đã giao / đang giao / đã hủy).");
+      return;
+    }
+
+    const reason = document.getElementById("cancelReason").value.trim();
+    const noteExtra = reason ? `\n[Hủy bởi khách] ${reason}` : "\n[Hủy bởi khách]";
+
+    const { error } = await db.from("orders").update({
+      status: "Đã hủy",
+      payment_status: order.payment_status === "paid" ? order.payment_status : "cancelled",
+      note: (order.note || "") + noteExtra,
+      updated_at: new Date().toISOString()
+    }).eq("id", cancelOrderId);
+
+    if (error) {
+      alert("❌ " + error.message);
+      return;
+    }
+
+    // Hoàn tồn kho nếu có product_id
+    if (order.product_id && order.quantity) {
+      const { data: prod } = await db.from("products").select("stock").eq("id", order.product_id).single();
+      if (prod) {
+        await db.from("products").update({ stock: Number(prod.stock || 0) + Number(order.quantity) }).eq("id", order.product_id);
+      }
+    } else {
+      // Fallback: tìm theo tên sản phẩm
+      const { data: prods } = await db.from("products").select("id, stock").eq("name", order.product_type).limit(1);
+      if (prods && prods[0]) {
+        await db.from("products").update({ stock: Number(prods[0].stock || 0) + Number(order.quantity) }).eq("id", prods[0].id);
+      }
+    }
+
+    showToast("✅ Đã hủy đơn " + order.order_code);
+    sendDeviceNotification("✅ Đã hủy đơn", `Đơn ${order.order_code} đã được hủy.`, "cancel-ok");
+    closeCancelModal();
+    await loadCustomerOrders();
+    await loadProducts();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ========== ADMIN ========== */
 async function loadAdmin() {
   const orders = await getAllOrders();
   document.getElementById("aCount").textContent = orders.length;
@@ -551,10 +849,11 @@ async function loadAdmin() {
     const ps = o.payment_status || "pending";
     const hasTracking = !!o.tracking_code;
     return `<tr>
-    <td>${esc(o.order_code)}</td>
-<td>${esc(o.customer_name)}<br>${esc(o.phone)}</td>
-<td style="white-space:normal;max-width:220px;min-width:140px">${esc(o.address || "-")}</td>
-<td>${esc(o.product_type)}</td>
+      <td>${esc(o.order_code)}</td>
+      <td>${esc(o.customer_name)}</td>
+      <td>${esc(o.phone || "-")}</td>
+      <td style="white-space:normal;max-width:180px;min-width:120px">${esc(o.address || "-")}</td>
+      <td>${esc(o.product_type)}</td>
       <td>${esc(o.size || "-")}</td>
       <td>${o.quantity}</td>
       <td>${money(o.total_amount)}</td>
@@ -629,10 +928,13 @@ async function saveTracking() {
 function adminTab(t) {
   document.getElementById("adminOrdersPanel").classList.toggle("hidden", t !== "orders");
   document.getElementById("adminProductsPanel").classList.toggle("hidden", t !== "products");
+  document.getElementById("adminSettingsPanel").classList.toggle("hidden", t !== "settings");
   document.getElementById("ordersTab").classList.toggle("on", t === "orders");
   document.getElementById("productsTab").classList.toggle("on", t === "products");
+  document.getElementById("settingsTab").classList.toggle("on", t === "settings");
 }
 
+/* ========== PRODUCT ADMIN ========== */
 function previewImage() {
   const f = document.getElementById("pImage").files[0];
   if (f) {
@@ -745,6 +1047,126 @@ async function deleteProduct(id) {
   }
 }
 
+/* ========== PROFILE / AVATAR / PHONE ========== */
+function openProfileModal() {
+  if (!currentProfile && !currentUser) return;
+  document.getElementById("profileName").value = currentProfile?.full_name || "";
+  document.getElementById("profilePhone").value = currentProfile?.phone || "";
+  document.getElementById("profileEmail").value = currentUser?.email || "";
+  const av = document.getElementById("profileAvatarPreview");
+  if (currentProfile?.avatar_url) {
+    av.src = currentProfile.avatar_url;
+  } else {
+    av.src = "https://placehold.co/80x80?text=Avatar";
+  }
+  document.getElementById("profileAvatarFile").value = "";
+  document.getElementById("profileModal").classList.remove("hidden");
+}
+
+function closeProfileModal() {
+  document.getElementById("profileModal").classList.add("hidden");
+}
+
+function previewProfileAvatar() {
+  const f = document.getElementById("profileAvatarFile").files[0];
+  if (f) {
+    document.getElementById("profileAvatarPreview").src = URL.createObjectURL(f);
+  }
+}
+
+async function saveProfile() {
+  if (!currentUser) return;
+  const name = document.getElementById("profileName").value.trim();
+  const phone = document.getElementById("profilePhone").value.trim();
+  if (!name) return alert("Vui lòng nhập họ tên.");
+  if (!phone) return alert("Vui lòng nhập số điện thoại.");
+
+  const btn = document.getElementById("btnSaveProfile");
+  btn.disabled = true;
+  try {
+    let avatar_url = currentProfile?.avatar_url || "";
+    const file = document.getElementById("profileAvatarFile").files[0];
+    if (file) {
+      const ext = file.name.split(".").pop().toLowerCase();
+      const path = `avatars/${currentUser.id}.${ext}`;
+      const { error: upErr } = await db.storage.from("products").upload(path, file, { upsert: true });
+      if (upErr) {
+        // Thử bucket avatars nếu có, fallback products
+        console.warn(upErr);
+        const path2 = `avatar_${currentUser.id}.${ext}`;
+        const { error: e2 } = await db.storage.from("products").upload(path2, file, { upsert: true });
+        if (e2) return alert("Upload ảnh lỗi: " + e2.message);
+        avatar_url = db.storage.from("products").getPublicUrl(path2).data.publicUrl;
+      } else {
+        avatar_url = db.storage.from("products").getPublicUrl(path).data.publicUrl;
+      }
+    }
+
+    const { error } = await db.from("profiles").upsert({
+      id: currentUser.id,
+      full_name: name,
+      phone: phone,
+      avatar_url: avatar_url || null,
+      updated_at: new Date().toISOString()
+    });
+
+    if (error) return alert("❌ " + error.message);
+
+    currentProfile = { ...currentProfile, full_name: name, phone, avatar_url };
+    document.getElementById("userName").textContent = name;
+    document.getElementById("welcomeName").textContent = name;
+    document.getElementById("customerName").value = name;
+    document.getElementById("customerPhone").value = phone;
+    applyLogo(avatar_url);
+
+    showToast("✅ Đã cập nhật hồ sơ!");
+    closeProfileModal();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ========== ADMIN LOGO SETTINGS ========== */
+function previewLogo() {
+  const f = document.getElementById("logoFile").files[0];
+  if (f) {
+    const img = document.getElementById("logoPreview");
+    img.src = URL.createObjectURL(f);
+    img.classList.remove("hidden");
+  }
+}
+
+async function saveLogoSettings() {
+  if (!currentUser || currentProfile?.role !== "admin") return alert("Chỉ admin mới đổi được.");
+  const file = document.getElementById("logoFile").files[0];
+  const shopName = document.getElementById("shopName").value.trim() || "chacha.doll5";
+
+  let logoUrl = currentProfile?.avatar_url || "";
+  if (file) {
+    const ext = file.name.split(".").pop().toLowerCase();
+    const path = `logo/shop_logo.${ext}`;
+    const { error } = await db.storage.from("products").upload(path, file, { upsert: true });
+    if (error) return alert("Upload logo lỗi: " + error.message);
+    logoUrl = db.storage.from("products").getPublicUrl(path).data.publicUrl;
+  }
+
+  // Lưu vào profile admin (dùng làm logo site)
+  const { error } = await db.from("profiles").update({
+    avatar_url: logoUrl || null,
+    full_name: shopName,
+    updated_at: new Date().toISOString()
+  }).eq("id", currentUser.id);
+
+  if (error) return alert("❌ " + error.message);
+
+  currentProfile.avatar_url = logoUrl;
+  currentProfile.full_name = shopName;
+  applyLogo(logoUrl);
+  document.getElementById("userName").textContent = shopName;
+  showToast("✅ Đã lưu logo & tên shop!");
+}
+
+/* ========== INIT ========== */
 db.auth.onAuthStateChange((event, session) => {
   if (session) setTimeout(loadApp, 0);
 });
