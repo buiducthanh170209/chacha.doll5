@@ -18,6 +18,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 .tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #eee;text-align:left;white-space:nowrap;font-size:13px}.table th{background:#f8fafc}.thumb{width:48px;height:48px;object-fit:cover;border-radius:9px}.danger{border:0;background:#fee2e2;color:#b91c1c;padding:8px 10px;border-radius:9px}.secondary{border:1px solid #ddd;background:#fff;padding:9px 12px;border-radius:9px}.empty{text-align:center;padding:30px;color:#64748b}
 .paybox{background:linear-gradient(135deg,#fff1f8,#f5f3ff);border:1px solid #fbcfe8;border-radius:18px;padding:20px;margin-top:16px}.paybox h3{margin:0 0 12px}.qrwrap{text-align:center;margin:16px 0}.qrwrap img{max-width:260px;width:100%;border-radius:12px;border:1px solid #eee;background:#fff}.payinfo{display:grid;gap:8px;font-size:14px}.payinfo b{color:#be185d}.paystatus{display:inline-block;padding:6px 12px;border-radius:99px;font-weight:700;font-size:13px;margin-top:8px}
 .loading{opacity:.6;pointer-events:none}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2937;color:#fff;padding:12px 20px;border-radius:12px;z-index:100;font-size:14px;box-shadow:0 8px 30px #0003}
+.modal-bg{position:fixed;inset:0;background:#0006;display:grid;place-items:center;z-index:50;padding:16px}.modal{background:#fff;border-radius:18px;padding:22px;width:min(420px,100%);box-shadow:0 20px 50px #0003}
 @media(max-width:800px){button{min-height:44px}.cards,.products{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.oinfo{grid-template-columns:1fr 1fr}.user-name{display:none}}
 </style>
 </head>
@@ -88,9 +89,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 <div id="paymentCard" class="card hidden" style="margin-top:18px">
   <h2>💳 Thanh toán chuyển khoản</h2>
   <div class="paybox">
-    <div class="qrwrap">
-      <img id="qrImage" alt="QR thanh toán" src="">
-    </div>
+    <div class="qrwrap"><img id="qrImage" alt="QR thanh toán" src=""></div>
     <div class="payinfo">
       <div>Ngân hàng: <b>MB Bank</b></div>
       <div>Số tài khoản: <b>290605170209</b></div>
@@ -104,7 +103,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
       <button class="primary" id="btnCheckPay" onclick="checkPayment()">🔄 Kiểm tra thanh toán</button>
       <button class="secondary" onclick="closePaymentCard()">Đóng</button>
     </div>
-    <p class="muted" style="margin-top:12px;font-size:13px">Sau khi chuyển khoản đúng số tiền và nội dung, hệ thống sẽ tự cập nhật trong vài phút. Bạn có thể bấm “Kiểm tra thanh toán” để làm mới trạng thái.</p>
+    <p class="muted" style="margin-top:12px;font-size:13px">Sau khi chuyển khoản đúng số tiền và nội dung, hệ thống sẽ tự cập nhật trong vài phút.</p>
   </div>
 </div>
 
@@ -179,6 +178,28 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
 </section>
 </div>
 
+<!-- Modal nhập mã vận đơn -->
+<div id="trackingModal" class="modal-bg hidden">
+  <div class="modal">
+    <h3 style="margin:0 0 14px">🚚 Nhập mã vận đơn SPX</h3>
+    <div class="field"><label>Đơn vị vận chuyển</label><input id="mShipCompany" value="SPX Express"></div>
+    <div class="field"><label>Mã vận đơn *</label><input id="mTrackingCode" placeholder="VD: SPXVN..."></div>
+    <div class="field">
+      <label>Cập nhật trạng thái đơn</label>
+      <select id="mOrderStatus">
+        <option value="Đang giao">Đang giao</option>
+        <option value="Đang xử lý">Đang xử lý</option>
+        <option value="Đã giao">Đã giao</option>
+        <option value="">Giữ nguyên</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="primary wide" onclick="saveTracking()">Lưu</button>
+      <button class="secondary" onclick="closeTrackingModal()">Hủy</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = "https://lmqvzejtjafvlsawunfx.supabase.co";
 const SUPABASE_KEY = "sb_publishable_1_iez1VtYJbF_gLkqV1ZjA_ngqVnygn";
@@ -186,7 +207,6 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const BANK_BIN = "970422";
 const BANK_ACCOUNT = "290605170209";
-const BANK_NAME = "MB Bank";
 const ACCOUNT_NAME = "CHACHA DOLL";
 
 const money = n => Number(n || 0).toLocaleString("vi-VN") + "đ";
@@ -283,6 +303,7 @@ let products = [];
 let selected = null;
 let editingId = null;
 let currentPayOrder = null;
+let trackingOrderId = null;
 
 async function loadProducts() {
   const { data, error } = await db.from("products").select("*").eq("active", true).order("created_at", { ascending: false });
@@ -316,11 +337,9 @@ document.addEventListener("click", function (e) {
   const chooseBtn = e.target.closest(".js-choose-product");
   if (sizeBtn) {
     e.preventDefault();
-    const id = sizeBtn.dataset.productId;
-    const size = sizeBtn.dataset.size || "";
     document.querySelectorAll(".js-size").forEach(b => b.classList.remove("selected"));
     sizeBtn.classList.add("selected");
-    chooseProduct(id, size);
+    chooseProduct(sizeBtn.dataset.productId, sizeBtn.dataset.size || "");
     return;
   }
   if (chooseBtn) {
@@ -335,10 +354,7 @@ document.addEventListener("click", function (e) {
 
 function chooseProduct(id, size) {
   selected = products.find(p => String(p.id) === String(id));
-  if (!selected) {
-    alert("Không tìm thấy sản phẩm.");
-    return;
-  }
+  if (!selected) return alert("Không tìm thấy sản phẩm.");
   const sizes = Array.isArray(selected.sizes) ? selected.sizes : String(selected.sizes || "").split(",").map(x => x.trim()).filter(Boolean);
   document.getElementById("selectedSize").value = size || sizes[0] || "Không có size";
   document.getElementById("selectedProduct").value = selected.name || "";
@@ -457,19 +473,12 @@ async function checkPayment() {
   btn.disabled = true;
   try {
     const { data, error } = await db.from("orders").select("*").eq("id", currentPayOrder.id).single();
-    if (error) {
-      alert("❌ Không lấy được trạng thái: " + error.message);
-      return;
-    }
+    if (error) return alert("❌ Không lấy được trạng thái: " + error.message);
     currentPayOrder = data;
     showPaymentUI(data);
-    if (data.payment_status === "paid") {
-      showToast("✅ Đơn đã được thanh toán đầy đủ!");
-    } else if (data.payment_status === "partial") {
-      showToast("🟡 Đã nhận một phần. Vui lòng chuyển thêm phần còn lại.");
-    } else {
-      showToast("⏳ Chưa nhận được giao dịch. Hãy đợi vài phút rồi thử lại.");
-    }
+    if (data.payment_status === "paid") showToast("✅ Đơn đã được thanh toán đầy đủ!");
+    else if (data.payment_status === "partial") showToast("🟡 Đã nhận một phần.");
+    else showToast("⏳ Chưa nhận được giao dịch.");
     await loadCustomerOrders();
   } finally {
     btn.disabled = false;
@@ -480,29 +489,18 @@ async function getOrdersForCustomer() {
   const { data: { user } } = await db.auth.getUser();
   if (!user) return [];
   const { data, error } = await db.from("orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
-  if (error) {
-    console.error(error);
-    return [];
-  }
+  if (error) { console.error(error); return []; }
   return data || [];
 }
 
 async function getAllOrders() {
   const { data, error } = await db.from("orders").select("*").order("created_at", { ascending: false });
-  if (error) {
-    console.error(error);
-    return [];
-  }
+  if (error) { console.error(error); return []; }
   return data || [];
 }
 
-function paidOf(o) {
-  return Number(o.deposit_amount ?? o.paid_amount ?? 0);
-}
-
-function remainOf(o) {
-  return Math.max(Number(o.total_amount || 0) - paidOf(o), 0);
-}
+function paidOf(o) { return Number(o.deposit_amount ?? o.paid_amount ?? 0); }
+function remainOf(o) { return Math.max(Number(o.total_amount || 0) - paidOf(o), 0); }
 
 async function loadCustomerOrders() {
   const orders = await getOrdersForCustomer();
@@ -542,9 +540,7 @@ async function loadCustomerOrders() {
   }).join("") : '<div class="empty">Chưa có đơn hàng.</div>';
 }
 
-function openPayForOrder(o) {
-  showPaymentUI(o);
-}
+function openPayForOrder(o) { showPaymentUI(o); }
 
 async function loadAdmin() {
   const orders = await getAllOrders();
@@ -555,9 +551,10 @@ async function loadAdmin() {
     const ps = o.payment_status || "pending";
     const hasTracking = !!o.tracking_code;
     return `<tr>
-      <td>${esc(o.order_code)}</td>
-      <td>${esc(o.customer_name)}<br>${esc(o.phone)}</td>
-      <td>${esc(o.product_type)}</td>
+    <td>${esc(o.order_code)}</td>
+<td>${esc(o.customer_name)}<br>${esc(o.phone)}</td>
+<td style="white-space:normal;max-width:220px;min-width:140px">${esc(o.address || "-")}</td>
+<td>${esc(o.product_type)}</td>
       <td>${esc(o.size || "-")}</td>
       <td>${o.quantity}</td>
       <td>${money(o.total_amount)}</td>
@@ -566,20 +563,21 @@ async function loadAdmin() {
       <td>${esc(ps)}</td>
       <td>
         <select onchange="changeStatus('${o.id}', this.value)">
-          ${["Chờ xác nhận", "Đã cọc", "Đang xử lý", "Đang giao", "Đã giao", "Đã hủy", "Đã thanh toán"].map(s =>
+          ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Đã hủy","Đã thanh toán"].map(s =>
             `<option ${o.status === s ? "selected" : ""}>${s}</option>`
           ).join("")}
         </select>
       </td>
-      <td style="white-space:normal;min-width:160px">
+      <td style="white-space:normal;min-width:170px">
         ${hasTracking
           ? `<div><b>${esc(o.shipping_company || "SPX")}</b><br>
-               <a href="https://spx.vn/?tracking=${encodeURIComponent(o.tracking_code)}" target="_blank" rel="noopener">
-                 ${esc(o.tracking_code)}
-               </a></div>`
+               <a href="https://spx.vn/?tracking=${encodeURIComponent(o.tracking_code)}" target="_blank" rel="noopener">${esc(o.tracking_code)}</a>
+               <br><button class="secondary" style="margin-top:6px;padding:6px 8px;font-size:12px"
+                 onclick="openTrackingModal('${o.id}','${esc(o.shipping_company || "SPX Express")}','${esc(o.tracking_code)}')">Sửa</button>
+             </div>`
           : `<button class="primary" style="padding:8px 10px;font-size:12px"
-               onclick="createSpxShipment('${o.id}', this)">
-               🚚 Tạo SPX
+               onclick="openTrackingModal('${o.id}','SPX Express','')">
+               🚚 Nhập mã SPX
              </button>`
         }
       </td>
@@ -594,30 +592,38 @@ async function changeStatus(id, status) {
   else loadAdmin();
 }
 
-async function createSpxShipment(orderId, btn) {
-  if (!confirm("Tạo vận đơn SPX Express cho đơn này?")) return;
-  const oldText = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = "Đang tạo...";
-  try {
-    const res = await fetch("/api/spx-create-shipment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ order_id: orderId })
-    });
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      alert("❌ " + (data.message || "Tạo vận đơn thất bại") + (data.detail ? "\n" + JSON.stringify(data.detail) : ""));
-      return;
-    }
-    showToast("✅ Đã tạo SPX: " + data.tracking_code);
-    await loadAdmin();
-  } catch (e) {
-    alert("❌ Lỗi mạng: " + e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = oldText;
-  }
+function openTrackingModal(orderId, company, code) {
+  trackingOrderId = orderId;
+  document.getElementById("mShipCompany").value = company || "SPX Express";
+  document.getElementById("mTrackingCode").value = code || "";
+  document.getElementById("mOrderStatus").value = "Đang giao";
+  document.getElementById("trackingModal").classList.remove("hidden");
+}
+
+function closeTrackingModal() {
+  trackingOrderId = null;
+  document.getElementById("trackingModal").classList.add("hidden");
+}
+
+async function saveTracking() {
+  if (!trackingOrderId) return;
+  const shipping_company = document.getElementById("mShipCompany").value.trim() || "SPX Express";
+  const tracking_code = document.getElementById("mTrackingCode").value.trim();
+  const statusVal = document.getElementById("mOrderStatus").value;
+  if (!tracking_code) return alert("Vui lòng nhập mã vận đơn.");
+
+  const payload = {
+    shipping_company,
+    tracking_code,
+    updated_at: new Date().toISOString()
+  };
+  if (statusVal) payload.status = statusVal;
+
+  const { error } = await db.from("orders").update(payload).eq("id", trackingOrderId);
+  if (error) return alert("❌ " + error.message);
+  showToast("✅ Đã lưu mã vận đơn");
+  closeTrackingModal();
+  loadAdmin();
 }
 
 function adminTab(t) {
