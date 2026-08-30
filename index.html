@@ -198,7 +198,7 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
   <div id="adminCancelAlert" class="card hidden" style="margin-bottom:22px;background:#fff1f2;border:1px solid #fecdd3">
     <div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap">
       <div><b style="color:#be123c;font-size:16px">⚠️ Có yêu cầu hủy đơn mới</b><div id="adminCancelAlertText" class="muted" style="margin-top:5px"></div></div>
-      <button class="primary" style="background:linear-gradient(135deg,#e11d48,#be123c)" onclick="filterAdminOrders('cancelled')">Xem đơn đã hủy</button>
+      <button class="primary" style="background:linear-gradient(135deg,#e11d48,#be123c)" onclick="openLatestCancelRequest()">🔔 Xem yêu cầu</button>
     </div>
   </div>
   <div class="cards">
@@ -316,6 +316,19 @@ header{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blu
   </div>
 </div>
 
+<!-- Modal Admin duyệt yêu cầu hủy -->
+<div id="adminCancelRequestModal" class="modal-bg hidden">
+  <div class="modal-card">
+    <h3 style="margin:0 0 14px">⚠️ Yêu cầu hủy đơn</h3>
+    <div id="adminCancelRequestContent"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap">
+      <button class="secondary" onclick="closeAdminCancelRequest()">Để sau</button>
+      <button class="danger" id="adminRejectCancelBtn" onclick="rejectCustomerCancel()">❌ Từ chối</button>
+      <button class="primary" id="adminApproveCancelBtn" onclick="approveCustomerCancel()">✅ OK - Hủy đơn</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal xác nhận hủy đơn -->
 <div id="cancelModal" class="modal-bg hidden">
   <div class="modal">
@@ -394,7 +407,8 @@ let adminFilter = "all";
 /* ===== STATUS HELPERS ===== */
 function getStatusGroup(status) {
   const s = (status || "").toLowerCase();
-  if (s.includes("hủy") || s === "cancelled") return "cancelled";
+  if (s === "Đã hủy" || s === "cancelled") return "cancelled";
+  if (s === "Khách yêu cầu hủy") return "pending";
   if (s.includes("đang giao") || s === "shipping") return "shipping";
   if (s.includes("đang xử lý") || s === "processing") return "processing";
   if (s.includes("đã giao") || s.includes("đã thanh toán") || s === "paid" || s === "delivered") return "paid";
@@ -481,12 +495,13 @@ function showAdminCancelAlert(order) {
   text.textContent=`Đơn ${order.order_code||"—"} • ${order.customer_name||"Khách hàng"} vừa hủy đơn.`;
 }
 async function scanCustomerCancellations(orders){
-  const list=(orders||[]).filter(o=>o.status==="Đã hủy"&&String(o.note||"").includes("[Đã hủy bởi khách]"));
+  const list=(orders||[]).filter(o=>o.status==="Khách yêu cầu hủy");
   if(!list.length)return;
   const seen=JSON.parse(localStorage.getItem("chacha_cancel_seen")||"[]");
   const fresh=list.filter(o=>!seen.includes(String(o.id)));
   if(fresh.length){
     showAdminCancelAlert(fresh[0]);
+    openAdminCancelRequest(fresh[0]);
     showToast(`⚠️ Có ${fresh.length} đơn khách vừa hủy`);
     sendDeviceNotification("⚠️ Khách hủy đơn",`${fresh.length} đơn đã được khách hủy.` ,"cancel-batch");
     localStorage.setItem("chacha_cancel_seen",JSON.stringify([...seen,...fresh.map(o=>String(o.id))].slice(-100)));
@@ -520,7 +535,7 @@ function setupRealtime(role) {
           showToast("🟡 Đơn " + o.order_code + " nhận một phần tiền.");
           sendDeviceNotification("🟡 Nhận tiền một phần", `Đơn ${o.order_code} đã nhận một phần thanh toán.`, "pay-partial-" + o.id);
         }
-        if (o.status === "Đã hủy" && String(o.note || "").includes("[Đã hủy bởi khách]") && o.status !== old.status) {
+        if (o.status === "Khách yêu cầu hủy" && o.status !== old.status) {
           showAdminCancelAlert(o);
           showToast("⚠️ Khách vừa hủy: " + o.order_code);
           sendDeviceNotification("⚠️ Khách hủy đơn", `Đơn ${o.order_code} đã được khách hủy.`, "cancel-" + o.id);
@@ -552,17 +567,20 @@ function setupRealtime(role) {
       const oldMap = new Map((allAdminOrders || []).map(x => [String(x.id), x.status]));
       latest.forEach(o => {
         const oldStatus = oldMap.get(String(o.id));
-        if (o.status === "Đã hủy" && String(o.note || "").includes("[Đã hủy bởi khách]") && oldStatus !== "Đã hủy") {
+        if (o.status === "Khách yêu cầu hủy" && oldStatus !== "Khách yêu cầu hủy") {
           showAdminCancelAlert(o);
           showToast("⚠️ Khách vừa hủy " + o.order_code);
           sendDeviceNotification("⚠️ Khách hủy đơn", `Đơn ${o.order_code} đã được khách hủy.`, "cancel-poll-" + o.id);
         }
       });
       allAdminOrders = latest;
-      document.getElementById("aCount").textContent = latest.length;
-      document.getElementById("aPaid").textContent = money(latest.reduce((a,o)=>a+paidOf(o),0));
-      document.getElementById("aRemain").textContent = money(latest.reduce((a,o)=>a+remainOf(o),0));
+      await scanCustomerCancellations(latest);
+      const active = latest.filter(o => getStatusGroup(o.status) !== "cancelled");
+      document.getElementById("aCount").textContent = active.length;
+      document.getElementById("aPaid").textContent = money(active.reduce((a,o)=>a+paidOf(o),0));
+      document.getElementById("aRemain").textContent = money(active.reduce((a,o)=>a+remainOf(o),0));
       updateAdminTabCounts(latest);
+      updateAdminCancelAlert(latest);
       renderAdminOrdersGrouped();
     }, 5000);
   }
@@ -884,7 +902,7 @@ function remainOf(o) { return Math.max(Number(o.total_amount || 0) - paidOf(o), 
 
 function canCancel(o) {
   if (!o) return false;
-  if (o.status === "Đã hủy" || o.status === "Đã giao" || o.status === "Đang giao") return false;
+  if (o.status === "Đã hủy" || o.status === "Khách yêu cầu hủy" || o.status === "Đã giao" || o.status === "Đang giao") return false;
   return ["Chờ xác nhận", "Đã cọc", "Đang xử lý"].includes(o.status) || !o.status;
 }
 
@@ -1035,15 +1053,19 @@ async function openOrderDetail(orderId, role) {
     }
   } else {
     // Admin actions
+    if (order.status === "Khách yêu cầu hủy") {
+      html += `<button class="danger wide" onclick="closeOrderDetail();openAdminCancelRequest(allAdminOrders.find(o=>String(o.id)===String('${order.id}')))" >⚠️ Xem lý do & xử lý hủy</button>`;
+    } else {
     html += `
       <select id="detailStatusSelect" style="padding:10px 12px;border-radius:10px;border:1px solid #ddd">
-        ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Khách yêu cầu hủy","Đã hủy","Đã thanh toán"].map(s =>
+        ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Đã hủy","Đã thanh toán"].map(s =>
           `<option value="${s}" ${order.status === s ? "selected" : ""}>${s}</option>`
         ).join("")}
       </select>
       <button class="primary" onclick="changeStatusFromDetail('${order.id}')">💾 Đổi trạng thái</button>
       <button class="secondary" onclick="openTrackingModal('${order.id}','${esc(order.shipping_company || "SPX Express")}','${esc(order.tracking_code || "")}');closeOrderDetail()">🚚 Mã vận đơn</button>
     `;
+    }
   }
   html += `<button class="secondary" onclick="closeOrderDetail()">Đóng</button>`;
   actions.innerHTML = html;
@@ -1085,75 +1107,124 @@ async function confirmCancelOrder() {
   const btn = document.getElementById("btnConfirmCancel");
   btn.disabled = true;
   const oldText = btn.textContent;
-  btn.textContent = "Đang hủy...";
+  btn.textContent = "Đang gửi yêu cầu...";
 
   try {
-    const { data: order, error: fetchErr } = await db
-      .from("orders")
-      .select("*")
-      .eq("id", cancelOrderId)
-      .single();
+    const { data: order, error: fetchErr } = await db.from("orders").select("*").eq("id", cancelOrderId).single();
+    if (fetchErr || !order) { alert("❌ Không tìm thấy đơn hàng."); return; }
+    if (!canCancel(order)) { alert("❌ Đơn này không thể yêu cầu hủy."); return; }
 
-    if (fetchErr || !order) {
-      alert("❌ Không tìm thấy đơn hàng.");
-      return;
-    }
+    const reason = document.getElementById("cancelReason").value.trim() || "Không ghi rõ lý do";
+    const marker = `[YÊU CẦU HỦY] Trạng thái trước: ${order.status || "Chờ xác nhận"}\nLý do: ${reason}`;
 
-    if (!canCancel(order)) {
-      alert("❌ Đơn này không thể hủy (đã giao / đang giao / đã hủy).");
-      return;
-    }
-
-    const reason = document.getElementById("cancelReason").value.trim();
-    const noteExtra = reason ? `\\n[Đã hủy bởi khách] ${reason}` : "\\n[Đã hủy bởi khách]";
-
-    // Hủy NGAY: đơn được đưa thẳng vào mục Đã hủy của cả khách và Admin.
     const { error } = await db.from("orders").update({
-      status: "Đã hủy",
-      payment_status: "cancelled",
-      note: (order.note || "") + noteExtra,
+      status: "Khách yêu cầu hủy",
+      note: (order.note ? order.note + "\n\n" : "") + marker,
       updated_at: new Date().toISOString()
     }).eq("id", cancelOrderId);
 
-    if (error) {
-      alert("❌ " + error.message);
-      return;
-    }
+    if (error) { alert("❌ " + error.message); return; }
 
-    // Hoàn lại tồn kho nếu đơn đã trừ kho.
-    if (order.product_id && order.quantity) {
-      const { data: prod } = await db.from("products").select("stock").eq("id", order.product_id).single();
-      if (prod) {
-        await db.from("products").update({
-          stock: Number(prod.stock || 0) + Number(order.quantity)
-        }).eq("id", order.product_id);
-      }
-    } else if (order.quantity) {
-      const { data: prods } = await db.from("products").select("id, stock").eq("name", order.product_type).limit(1);
-      if (prods && prods[0]) {
-        await db.from("products").update({
-          stock: Number(prods[0].stock || 0) + Number(order.quantity)
-        }).eq("id", prods[0].id);
-      }
-    }
-
-    showToast("✅ Đã hủy đơn " + order.order_code);
-    sendDeviceNotification(
-      "❌ Đơn đã hủy",
-      `Đơn ${order.order_code} đã được khách hủy và chuyển vào mục Đã hủy.`,
-      "cancelled-" + order.id
-    );
-
+    showToast("📨 Đã gửi yêu cầu hủy cho Admin");
     closeCancelModal();
     await loadCustomerOrders();
-    await loadProducts();
-
-    // Nếu Admin đang mở ở thiết bị khác, Realtime/polling sẽ đưa đơn vào mục Đã hủy.
   } finally {
     btn.disabled = false;
     btn.textContent = oldText;
   }
 }
+
+let adminCancelRequestId = null;
+
+function getCancelReason(order) {
+  const note = String(order?.note || "");
+  const m = note.match(/\[YÊU CẦU HỦY\][\s\S]*?Lý do:\s*([\s\S]*?)(?:\n\n|$)/i);
+  return m ? m[1].trim() : "Không ghi rõ lý do";
+}
+
+function getPreviousStatus(order) {
+  const note = String(order?.note || "");
+  const m = note.match(/\[YÊU CẦU HỦY\] Trạng thái trước:\s*([^\n]+)/i);
+  return m ? m[1].trim() : "Chờ xác nhận";
+}
+
+function openAdminCancelRequest(order) {
+  if (!order) return;
+  adminCancelRequestId = order.id;
+  document.getElementById("adminCancelRequestContent").innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-item"><small>Mã đơn</small><b>${esc(order.order_code)}</b></div>
+      <div class="detail-item"><small>Khách hàng</small><b>${esc(order.customer_name || "-")}</b></div>
+      <div class="detail-item"><small>Số điện thoại</small><b>${esc(order.phone || "-")}</b></div>
+      <div class="detail-item detail-full"><small>Lý do khách hủy</small><b style="white-space:pre-wrap">${esc(getCancelReason(order))}</b></div>
+    </div>`;
+  document.getElementById("adminCancelRequestModal").classList.remove("hidden");
+}
+
+function closeAdminCancelRequest() {
+  adminCancelRequestId = null;
+  document.getElementById("adminCancelRequestModal").classList.add("hidden");
+}
+
+async function approveCustomerCancel() {
+  if (!adminCancelRequestId) return;
+  const id = adminCancelRequestId;
+  const btn = document.getElementById("adminApproveCancelBtn");
+  btn.disabled = true; btn.textContent = "Đang xử lý...";
+  try {
+    const { data: order, error: fe } = await db.from("orders").select("*").eq("id", id).single();
+    if (fe || !order) return alert("❌ Không tìm thấy đơn.");
+    if (order.status !== "Khách yêu cầu hủy") return alert("Yêu cầu này đã được xử lý.");
+
+    const { error } = await db.from("orders").update({
+      status: "Đã hủy",
+      payment_status: "cancelled",
+      updated_at: new Date().toISOString()
+    }).eq("id", id);
+    if (error) return alert("❌ " + error.message);
+
+    // Hoàn tồn kho khi Admin duyệt hủy.
+    if (order.product_id && order.quantity) {
+      const { data: prod } = await db.from("products").select("stock").eq("id", order.product_id).single();
+      if (prod) await db.from("products").update({ stock: Number(prod.stock || 0) + Number(order.quantity) }).eq("id", order.product_id);
+    } else if (order.quantity) {
+      const { data: prods } = await db.from("products").select("id,stock").eq("name", order.product_type).limit(1);
+      if (prods?.[0]) await db.from("products").update({ stock: Number(prods[0].stock || 0) + Number(order.quantity) }).eq("id", prods[0].id);
+    }
+
+    closeAdminCancelRequest();
+    showToast("✅ Đã duyệt hủy " + order.order_code);
+    await loadAdmin();
+  } finally {
+    btn.disabled = false; btn.textContent = "✅ OK - Hủy đơn";
+  }
+}
+
+async function rejectCustomerCancel() {
+  if (!adminCancelRequestId) return;
+  const id = adminCancelRequestId;
+  const btn = document.getElementById("adminRejectCancelBtn");
+  btn.disabled = true;
+  try {
+    const { data: order, error: fe } = await db.from("orders").select("*").eq("id", id).single();
+    if (fe || !order) return alert("❌ Không tìm thấy đơn.");
+    if (order.status !== "Khách yêu cầu hủy") return alert("Yêu cầu này đã được xử lý.");
+    const previous = getPreviousStatus(order);
+    const { error } = await db.from("orders").update({ status: previous, updated_at: new Date().toISOString() }).eq("id", id);
+    if (error) return alert("❌ " + error.message);
+    closeAdminCancelRequest();
+    showToast("↩️ Đã từ chối yêu cầu hủy");
+    await loadAdmin();
+  } finally { btn.disabled = false; }
+}
+
+function openLatestCancelRequest() {
+  const requests = (allAdminOrders || []).filter(o => o.status === "Khách yêu cầu hủy");
+  if (!requests.length) return alert("Không có yêu cầu hủy đang chờ.");
+  requests.sort((a,b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0));
+  openAdminCancelRequest(requests[0]);
+}
+
 
 /* ========== ADMIN ========== */
 function filterAdminOrders(filter) {
@@ -1243,7 +1314,7 @@ function renderAdminOrdersGrouped() {
                   <td>${esc(ps)}</td>
                   <td onclick="event.stopPropagation()">
                     <select onchange="changeStatus('${o.id}', this.value)">
-                      ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Khách yêu cầu hủy","Đã hủy","Đã thanh toán"].map(s =>
+                      ${["Chờ xác nhận","Đã cọc","Đang xử lý","Đang giao","Đã giao","Đã hủy","Đã thanh toán"].map(s =>
                         `<option ${o.status === s ? "selected" : ""}>${s}</option>`
                       ).join("")}
                     </select>
@@ -1278,7 +1349,7 @@ function updateAdminCancelAlert(orders) {
 
   // Đơn khách vừa hủy được đánh dấu bằng nội dung này trong note.
   const cancelledByCustomer = (orders || []).filter(o =>
-    o.status === "Đã hủy" && String(o.note || "").includes("[Đã hủy bởi khách]")
+    o.status === "Khách yêu cầu hủy"
   );
 
   if (!cancelledByCustomer.length) {
@@ -1290,7 +1361,7 @@ function updateAdminCancelAlert(orders) {
     new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0)
   )[0];
   alertBox.classList.remove("hidden");
-  text.textContent = `${cancelledByCustomer.length} đơn khách đã hủy. Mới nhất: ${latest.order_code} • ${latest.customer_name || "Khách hàng"}`;
+  text.textContent = `${cancelledByCustomer.length} yêu cầu hủy đang chờ. Mới nhất: ${latest.order_code} • ${latest.customer_name || "Khách hàng"}`;
 }
 
 async function loadAdmin() {
